@@ -75,13 +75,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
+        <div className="flex items-center justify-between gap-2 px-2 py-5.5 lg:py-6.5">
           <Link href="/">
             <div className="flex flex-row items-center justify-center space-x-2">
-              <div className="ml-2 rounded-lg bg-[#3c4fe0] p-1">
+              <div className="ml-2">
                 <Image
-                  width={32}
-                  height={32}
+                  width={72}
+                  height={72}
                   src={"/images/logo/dna.svg"}
                   alt="Logo"
                   priority
