@@ -21,6 +21,8 @@ const Settings = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [infoUnchangedMessage, setInfoUnchangedMessage] = useState<string | null>(null); // Mensagem de informações inalteradas
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -45,58 +47,101 @@ const Settings = () => {
   ) => {
     e.preventDefault();
     setIsLoading(true);
+    setSuccessMessage(null);
+    setInfoUnchangedMessage(null); // Limpa a mensagem de informações inalteradas
+
+    const updatedUser = {
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      userBio: userData.userBio,
+      photo: userData.photo,
+      email: userData.email,
+    };
+
+    // Verifica se as informações são idênticas
+    if (
+      updatedUser.firstName === userData.firstName &&
+      updatedUser.lastName === userData.lastName &&
+      updatedUser.userBio === userData.userBio
+    ) {
+      setIsLoading(false);
+      setInfoUnchangedMessage("Nenhuma informação foi alterada."); // Mensagem informando que as informações não foram alteradas
+      // Define um temporizador para limpar a mensagem de informações inalteradas após 6 segundos
+      setTimeout(() => {
+        setInfoUnchangedMessage(null);
+      }, 6000);
+      return;
+    }
 
     try {
-      const updatedUser = {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        userBio: userData.userBio,
-        photo: userData.photo,
-        email: userData.email,
-      };
-
       if (userData.id) {
         const updated = await updateUser(userData.id, updatedUser);
         setUserData(updated);
+        setSuccessMessage("As informações foram alteradas com sucesso!");
+        resetFormFields(); // Limpa os campos após o salvamento
+
+        // Define um temporizador para limpar a mensagem de sucesso após 6 segundos
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 6000);
       }
 
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      setErrors("Failed to update profile.");
-      console.error("Error updating user:", error);
+      setErrors("Falha ao atualizar o perfil.");
+      console.error("Erro ao atualizar usuário:", error);
     }
   };
-
-  console.log(userData);
 
   const handleImageUploadSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
     setIsLoading(true);
+    setSuccessMessage(null);
+    setInfoUnchangedMessage(null); // Limpa a mensagem de informações inalteradas
 
-    try {
-      let base64Image = userData.photo;
-      if (imageFile) {
-        base64Image = await convertImageToBase64(imageFile);
+    let base64Image = userData.photo;
+    if (imageFile) {
+      base64Image = await convertImageToBase64(imageFile);
+    }
+
+    if (userData.id) {
+      const updatedUser = {
+        ...userData,
+        photo: base64Image,
+      };
+
+      // Verifica se a imagem é a mesma
+      if (base64Image === userData.photo) {
+        setIsLoading(false);
+        setInfoUnchangedMessage("Por favor, escolha uma imagem diferente para carregar."); // Mensagem informando que a imagem não foi alterada
+        // Define um temporizador para limpar a mensagem de informações inalteradas após 6 segundos
+        setTimeout(() => {
+          setInfoUnchangedMessage(null);
+        }, 6000);
+        return;
       }
 
-      if (userData.id) {
-        const updatedUser = {
-          ...userData,
-          photo: base64Image,
-        };
+      try {
         const updated = await updateUser(userData.id, updatedUser);
         setUserData(updated);
-      }
+        setSuccessMessage("A imagem foi carregada com sucesso!");
+        resetImageField(); // Limpa o campo de imagem após o upload
 
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      setErrors("Failed to upload image.");
-      console.error("Error uploading image:", error);
+        // Define um temporizador para limpar a mensagem de sucesso após 6 segundos
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 6000);
+      } catch (error) {
+        setIsLoading(false);
+        setErrors("Falha ao carregar a imagem.");
+        console.error("Erro ao carregar imagem:", error);
+      }
     }
+
+    setIsLoading(false);
   };
 
   const convertImageToBase64 = async (file: File): Promise<string> => {
@@ -128,14 +173,40 @@ const Settings = () => {
     }
   };
 
+  const resetFormFields = () => {
+    setUserData({
+      ...userData,
+      firstName: "",
+      lastName: "",
+      userBio: "",
+    });
+  };
+
+  const resetImageField = () => {
+    setImageFile(null);
+    setUserData((prevData) => ({
+      ...prevData,
+      photo: "/images/user/user-03.png", // Revertendo para a imagem padrão
+    }));
+  };
+
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-270">
         <Breadcrumb pageName="Settings" />
-        <div className="mb-4 flex flex-row items-center  space-x-2">
+        <div className="mb-4 flex flex-row items-center space-x-2">
           <span>Toggle Theme</span>
           <DarkModeSwitcher />
         </div>
+        {successMessage && (
+          <div className="mb-4 text-green-600">{successMessage}</div>
+        )}
+        {infoUnchangedMessage && (
+          <div className="mb-4 text-red-600">{infoUnchangedMessage}</div> // Mensagem de informações inalteradas
+        )}
+        {errors && (
+          <div className="mb-4 text-red-600">{errors}</div> // Mensagem de erro
+        )}
         <div className="grid grid-cols-5 gap-8">
           <div className="col-span-5 xl:col-span-3">
             <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -186,7 +257,7 @@ const Settings = () => {
 
                   <div className="mb-5.5">
                     <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                      Email Address
+                      Email
                     </label>
                     <div className="relative">
                       <span className="absolute left-4.5 top-3">
@@ -204,21 +275,14 @@ const Settings = () => {
 
                   <div className="mb-5.5">
                     <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                      BIO
+                      About
                     </label>
-                    <div className="relative">
-                      <span className="absolute left-4.5 top-4">
-                        <Edit size={20} />
-                      </span>
-
-                      <textarea
-                        className="w-full rounded-lg border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                        name="userBio"
-                        rows={6}
-                        value={userData.userBio}
-                        onChange={handleChange}
-                      ></textarea>
-                    </div>
+                    <textarea
+                      name="userBio"
+                      className="min-h-[120px] w-full rounded-lg border border-stroke bg-gray p-3 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                      value={userData.userBio}
+                      onChange={handleChange}
+                    />
                   </div>
 
                   <div className="flex justify-end gap-4.5">
@@ -252,13 +316,13 @@ const Settings = () => {
               <div className="p-7">
                 <form onSubmit={handleImageUploadSubmit}>
                   <div className="mb-4 flex items-center gap-3">
-                    <div className="h-14 w-14 rounded-full">
+                    <div className="h-14 w-14 rounded-full overflow-hidden">
                       <Image
                         src={userData.photo}
                         width={55}
                         height={55}
                         alt="User"
-                        className="rounded-full"
+                        className="object-cover"
                       />
                     </div>
                     <div>
@@ -322,7 +386,7 @@ const Settings = () => {
                       type="submit"
                       disabled={isLoading}
                     >
-                      {isLoading ? "Saving..." : "Save"}
+                      {isLoading ? "Saving..." : "Upload"}
                     </button>
                   </div>
                 </form>
@@ -331,6 +395,7 @@ const Settings = () => {
           </div>
         </div>
       </div>
+      
     </DefaultLayout>
   );
 };
