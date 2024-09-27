@@ -1255,10 +1255,10 @@ abitype@1.0.5:
   resolved "https://registry.npmjs.org/abitype/-/abitype-1.0.5.tgz"
   integrity sha512-YzDhti7cjlfaBhHutMaboYB21Ha3rXR9QTkNJFzYC4kC8YclaiwPBBBJY8ejFdu2wnJeZCVZSMlQJ7fi8S6hsw==
 
-ably@^2.3.1:
-  version "2.3.1"
-  resolved "https://registry.npmjs.org/ably/-/ably-2.3.1.tgz"
-  integrity sha512-OQ9PUwQe0qehOUPqvLargmUTlPQsxCAdStIpLZE7pT68yDd3JF28R1Ap7C50DluCIa6NqXrieRSa2tcLNN95PA==
+ably@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.npmjs.org/ably/-/ably-2.4.0.tgz"
+  integrity sha512-k70ywRHNTKIDIiftB9tXdwmXLm4PbGD9/Uu5PqOwH1G6EXDZvptuOvmcv5Dbzn5e1kItXshVuF/TErYdtifoSw==
   dependencies:
     "@ably/msgpack-js" "^0.4.0"
     fastestsmallesttextencoderdecoder "^1.0.22"
