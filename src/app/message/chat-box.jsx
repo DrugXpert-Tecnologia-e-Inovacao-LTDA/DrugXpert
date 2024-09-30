@@ -3,7 +3,6 @@ import { useChannel } from "ably/react";
 import { useAbly } from "ably/react";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { SendIcon } from "lucide-react";
-import { useUser } from "../context/UserContext";
 import { resizeBase64Img } from "@/lib/utils";
 import {
   createGroup,
@@ -20,34 +19,40 @@ function ChatBox() {
   const [currentGroup, setCurrentGroup] = useState(null);
   const [messageText, setMessageText] = useState("");
   const [receivedMessages, setMessages] = useState([]);
-  const [user_, setUser_] = useState("");
+  const [user_, setUser_] = useState(null);
   const channelName = "chat-demo1";
   const { data: session } = useSession();
-  const user = useUser();
+  
+  // Define o canal de comunicação do Ably
   const { channel } = useChannel(channelName, (message) => {
-    if (message.data.group === currentGroup._id) {
+    if (message.data.group === currentGroup?._id) {
       setMessages((prevMessages) => [...prevMessages, message.data]);
     }
   });
 
   const bottomRef = useRef(null);
 
+  // Scroll para a última mensagem
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [receivedMessages]);
 
+  // Buscar grupos e informações do usuário ao carregar a página
   useEffect(() => {
     const fetchGroups = async () => {
-      const groupsFromServer = await getAllGroups();
-      const user_ = await getUserByEmail(session?.user?.email);
-      setUser_(user_);
-      setGroups(groupsFromServer);
+      if (session?.user?.email) {
+        const groupsFromServer = await getAllGroups();
+        const user_ = await getUserByEmail(session.user.email);
+        setUser_(user_);
+        setGroups(groupsFromServer);
+      }
     };
     fetchGroups();
   }, [session?.user?.email]);
 
+  // Criar novo grupo
   const handleCreateGroup = async (groupName) => {
     if (groupName && !groups.some((group) => group.name === groupName)) {
       const newGroup = await createGroup(groupName, user_._id);
@@ -57,6 +62,7 @@ function ChatBox() {
     }
   };
 
+  // Entrar em um grupo existente
   const handleJoinGroup = async (groupId) => {
     const selectedGroup = groups.find((group) => group._id === groupId);
     setCurrentGroup(selectedGroup);
@@ -74,41 +80,43 @@ function ChatBox() {
     setMessages(formattedMessages);
   };
 
+  // Enviar uma mensagem para o grupo
   const sendChatMessage = async (messageText) => {
+    if (!currentGroup || !channel) return;
+
     try {
-      if (currentGroup && channel) {
-        const resizedImage = await resizeBase64Img(user.photo, 100, 100);
+      const resizedImage = await resizeBase64Img(user_.photo, 100, 100);
 
-        const message = {
-          group: currentGroup._id,
-          name: `${user.firstName} ${user.lastName}`,
-          image: resizedImage,
-          data: messageText,
-          timestamp: new Date().toISOString(),
-          connectionId: ably.connection.id,
-        };
+      const message = {
+        group: currentGroup._id,
+        name: `${user_.firstName} ${user_.lastName}`,
+        image: resizedImage,
+        data: messageText,
+        timestamp: new Date().toISOString(),
+        connectionId: ably.connection.id,
+      };
 
-        await channel.publish("chat-message", message);
-        await addMessageToGroup(currentGroup._id, user_._id, messageText);
-
-        setMessageText("");
-      }
+      setMessageText(""); // Limpar o campo de mensagem antes de enviar
+      await channel.publish("chat-message", message);
+      await addMessageToGroup(currentGroup._id, user_._id, messageText);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Tratamento do envio de formulário
   const handleFormSubmission = (event) => {
     event.preventDefault();
     sendChatMessage(messageText);
   };
 
+  // Renderização das mensagens no chat
   const renderedMessages = receivedMessages.map((message, index) => {
     const isMe = message.connectionId === ably.connection.id;
     return (
       <div
         key={index}
-        className={`flex  ${isMe ? "justify-end" : "justify-start"} mb-4`}
+        className={`flex ${isMe ? "justify-end" : "justify-start"} mb-4`}
       >
         <div
           className={`max-w-xs rounded-lg border p-4 dark:border-graydark ${
@@ -123,7 +131,7 @@ function ChatBox() {
               alt={message.name}
               className="mr-2 h-8 w-8 rounded-full"
             />
-            <span className="text-sm ">{message.name}</span>
+            <span className="text-sm">{message.name}</span>
           </div>
           <p className="text-xs">{message.data}</p>
           <span className="text-gray-400 text-xs">
