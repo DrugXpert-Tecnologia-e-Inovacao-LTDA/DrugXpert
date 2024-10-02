@@ -53,18 +53,18 @@ const SignIn: React.FC = () => {
     <DefaultLayout>
       <ComponentHeader pageName="Sign In" />
 
-      <div className="flex flex-wrap items-center ">
+      <div className="flex flex-wrap items-center mx-0"> {/* Remove horizontal margins */}
         {isImageVisible && (
-          <div className="hidden xl:block xl:w-2/6 h-full">
+          <div className="hidden xl:block xl:w-1/2 h-full"> {/* Image container */}
             <img
               src="/images/login-image.png" // Ensure this path is correct
               alt="Sign in visual"
-              className="h-full w-full object-cover" // Use h-full to match the form's height
+              className="h-full w-full object-cover" // Use h-full to maintain aspect ratio
             />
           </div>
         )}
 
-        <div className="mx-auto w-full xl:w-4/6 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="w-full xl:w-1/2 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"> {/* Form container */}
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
             <span className="mb-1.5 block font-medium">Start for free</span>
             <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
@@ -104,7 +104,7 @@ const SignIn: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="6+ Characters, 1 Capital letter"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     required
                     disabled={isLoading}
                   />

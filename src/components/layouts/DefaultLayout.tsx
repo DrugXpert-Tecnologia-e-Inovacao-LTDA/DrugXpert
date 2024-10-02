@@ -37,7 +37,7 @@ export default function DefaultLayout({
         {!isPublicRoute && status === "authenticated" && (
           <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         )}
-        <div className="relative flex flex-1 flex-col lg:ml-72.5">
+        <div className="relative flex flex-1 flex-col">
           {!isPublicRoute && status === "authenticated" && (
             <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           )}
