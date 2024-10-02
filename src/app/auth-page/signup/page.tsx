@@ -5,13 +5,7 @@ import Image from "next/image";
 import ComponentHeader from "@/components/ComponentHeader/ComponentHeader";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { createUser } from "@/lib/actions/user.actions";
-import {
-  CameraIcon,
-  LoaderCircle,
-  LockIcon,
-  MailIcon,
-  UserIcon,
-} from "lucide-react";
+import { CameraIcon, LoaderCircle, LockIcon, MailIcon, UserIcon } from "lucide-react";
 
 const SignUp: React.FC = () => {
   const [user, setUser] = useState({
@@ -111,176 +105,186 @@ const SignUp: React.FC = () => {
     <DefaultLayout>
       <ComponentHeader pageName="Sign Up" />
 
-      <div className="flex justify-center">
-        <div className="flex flex-wrap items-center">
-          {isImageVisible && (
-            <div className="hidden w-full xl:block xl:w-1/2">
-              <div className="px-26 py-17.5 text-center">
-                <Image
-                  src="/images/signin-image.png" // Sign In image
-                  alt="Sign In Image"
-                  width={600} // Adjust to the same size as the Sign In image
-                  height={600} // Adjust to the same size as the Sign In image
-                  className="mt-4 object-cover"
+      <div className="flex flex-wrap items-center">
+        {isImageVisible && (
+          <div className="hidden xl:block xl:w-2/6 h-full">
+            <Image
+              src="/images/signin-image.png" // Sign Up image path
+              alt="Sign Up visual"
+              className="h-full w-full object-cover"
+              width={600}
+              height={600}
+            />
+          </div>
+        )}
+
+        <div className="mx-auto w-full xl:w-4/6 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+          <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
+            <span className="mb-1.5 block font-medium">Start for free</span>
+            <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+              Sign Up to ProteinBind
+            </h2>
+
+            {errors && <div className="text-red-500 mb-4">{errors}</div>}
+
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                  First Name
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={user.firstName}
+                    onChange={handleInputChange}
+                    placeholder="Enter your first name"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    required
+                    disabled={isLoading}
+                  />
+                  <span className="absolute right-4 top-4">
+                    <UserIcon />
+                  </span>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                  Last Name
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={user.lastName}
+                    onChange={handleInputChange}
+                    placeholder="Enter your last name"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    required
+                    disabled={isLoading}
+                  />
+                  <span className="absolute right-4 top-4">
+                    <UserIcon />
+                  </span>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                  Email
+                </label>
+                <div className="relative">
+                  <input
+                    type="email"
+                    name="email"
+                    value={user.email}
+                    onChange={handleInputChange}
+                    placeholder="Enter your email"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    required
+                    disabled={isLoading}
+                  />
+                  <span className="absolute right-4 top-4">
+                    <MailIcon />
+                  </span>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    name="password"
+                    value={user.password}
+                    onChange={handleInputChange}
+                    placeholder="6+ Characters, 1 Capital letter"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    required
+                    disabled={isLoading}
+                  />
+                  <span className="absolute right-4 top-4">
+                    <LockIcon />
+                  </span>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={user.confirmPassword}
+                    onChange={handleInputChange}
+                    placeholder="Re-enter your password"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    required
+                    disabled={isLoading}
+                  />
+                  <span className="absolute right-4 top-4">
+                    <LockIcon />
+                  </span>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                  Bio
+                </label>
+                <textarea
+                  name="userBio"
+                  value={user.userBio}
+                  onChange={handleInputChange}
+                  placeholder="Tell us about yourself"
+                  className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                ></textarea>
+              </div>
+
+              <div className="mb-6">
+                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                  Profile Picture
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-            </div>
-          )}
 
-          <form
-            onSubmit={handleSubmit}
-            className={`w-full xl:w-1/2 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark`}
-          >
-            <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-              <span className="mb-1.5 block font-medium">Start for free</span>
-              <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign Up to ProteinBind
-              </h2>
-
-              {errors && <div className="text-red-500 mb-4">{errors}</div>}
-
-              <div>
-                <div className="mb-4">
-                  <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    First Name
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={user.firstName}
-                      onChange={handleInputChange}
-                      placeholder="Enter your first name"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                    <span className="absolute right-4 top-4">
-                      <UserIcon />
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Last Name
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={user.lastName}
-                      onChange={handleInputChange}
-                      placeholder="Enter your last name"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                    <span className="absolute right-4 top-4">
-                      <UserIcon />
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Email
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="email"
-                      name="email"
-                      value={user.email}
-                      onChange={handleInputChange}
-                      placeholder="Enter your email"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                    <span className="absolute right-4 top-4">
-                      <MailIcon />
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="password"
-                      name="password"
-                      value={user.password}
-                      onChange={handleInputChange}
-                      placeholder="Enter your password"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                    <span className="absolute right-4 top-4">
-                      <LockIcon />
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Confirm Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      value={user.confirmPassword}
-                      onChange={handleInputChange}
-                      placeholder="Re-enter your password"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                    <span className="absolute right-4 top-4">
-                      <LockIcon />
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Bio
-                  </label>
-                  <textarea
-                    name="userBio"
-                    value={user.userBio}
-                    onChange={handleInputChange}
-                    placeholder="Tell us about yourself"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  ></textarea>
-                </div>
-
-                <div className="mb-6">
-                  <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Profile Picture
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>
-
+              <div className="mb-5">
                 <button
                   type="submit"
+                  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                   disabled={isLoading}
-                  className="flex w-full items-center justify-center rounded-lg bg-primary py-4 text-base font-medium text-white transition duration-200 hover:bg-opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isLoading ? (
-                    <LoaderCircle className="animate-spin" />
+                    <span className="flex items-center justify-center">
+                      <LoaderCircle className="mr-2 animate-spin" /> Signing
+                      Up...
+                    </span>
                   ) : (
                     "Sign Up"
                   )}
                 </button>
+              </div>
 
-                <div className="mt-4 text-center text-base text-body-color dark:text-white">
+              <div className="mt-6 text-center">
+                <p>
                   Already have an account?{" "}
-                  <Link href="/auth/signin" className="text-primary">
+                  <Link href="/auth-page/signin" className="text-primary">
                     Sign In
                   </Link>
-                </div>
+                </p>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </DefaultLayout>
