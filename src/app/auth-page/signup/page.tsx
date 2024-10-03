@@ -107,18 +107,18 @@ const SignUp: React.FC = () => {
 
       <div className="flex flex-wrap items-center">
         {isImageVisible && (
-          <div className="hidden xl:block xl:w-2/6 h-full">
+          <div className="hidden xl:block xl:w-1/2 h-full"> {/* Image container half width */}
             <Image
               src="/images/signin-image.png" // Sign Up image path
               alt="Sign Up visual"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover" // Full height to match form
               width={600}
               height={600}
             />
           </div>
         )}
 
-        <div className="mx-auto w-full xl:w-4/6 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="mx-auto w-full xl:w-1/2 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
             <span className="mb-1.5 block font-medium">Start for free</span>
             <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
@@ -290,5 +290,6 @@ const SignUp: React.FC = () => {
     </DefaultLayout>
   );
 };
+
 
 export default SignUp;
