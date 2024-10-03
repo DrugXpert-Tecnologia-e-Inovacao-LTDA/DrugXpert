@@ -32,22 +32,23 @@ export default function DefaultLayout({
   const isPublicRoute = publicRoutes.includes(pathname);
 
   return (
-    <>
-      <div className="flex">
-        {!isPublicRoute && status === "authenticated" && (
+    <div className="flex h-screen">
+      {/* Sidebar */}
+      {!isPublicRoute && status === "authenticated" && (
+        <aside className="w-64 bg-darkGray dark:bg-[#121212]">
           <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        </aside>
+      )}
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col ml-4"> {/* Aumenta a distância entre Sidebar e Main */}
+        {!isPublicRoute && status === "authenticated" && (
+          <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         )}
-        <div className="relative flex flex-1 flex-col">
-          {!isPublicRoute && status === "authenticated" && (
-            <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-          )}
-          <main>
-            <div className="mx-auto max-w-screen-2xl p-4 dark:bg-[#121212] md:p-6 2xl:p-10">
-              {children}
-            </div>
-          </main>
-        </div>
+        <main className="flex-1 overflow-auto bg-white dark:bg-[#121212] p-4 md:p-6 2xl:p-10">
+          {children}
+        </main>
       </div>
-    </>
+    </div>
   );
 }
