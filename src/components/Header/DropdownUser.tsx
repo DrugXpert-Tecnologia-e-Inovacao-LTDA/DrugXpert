@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useUser } from "@/app/context/UserContext";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -32,17 +32,17 @@ const DropdownUser = () => {
           <span className="block text-xs">{user.jobTitle}</span>
         </span>
 
-        <span className="h-11 w-11 rounded-full">
+        <span className="relative h-11 w-11 overflow-hidden rounded-full">
           <Image
             width={80}
             height={80}
             src={user.photo}
-            className="rounded-full"
-            style={{
-              width: "auto",
-              height: "auto",
-            }}
+            className="rounded-full object-cover" // Adicione 'object-cover' para manter a imagem dentro do círculo
             alt="User"
+            style={{
+              width: "100%",  // Faz a imagem ocupar toda a área disponível
+              height: "100%",
+            }}
           />
         </span>
 

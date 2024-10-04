@@ -43,14 +43,14 @@ const Profile = () => {
             </div>
           </div>
           <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11.5">
-            <div className="relative z-30 mx-auto -mt-22 h-30 w-30 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:w-44 sm:p-3 overflow-hidden">
+            <div className="relative z-30 mx-auto -mt-22 h-40 w-40 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:w-44 sm:p-3 overflow-hidden">
               <div className="relative drop-shadow-2 rounded-full overflow-hidden">
                 <img
                   src={newPhoto} // Usa a nova foto caso o upload tenha sido realizado
                   width={160}
                   height={160}
                   alt="profile"
-                  className="rounded-full object-cover w-full h-full"
+                  className="rounded-full object-cover w-40 h-40" // Garantindo o tamanho fixo
                 />
                 <label
                   htmlFor="profile"
