@@ -1,3 +1,4 @@
+// src/components/MoleculeStructure.jsx
 "use client";
 import React, { Component } from "react";
 import _ from "lodash";

@@ -63,7 +63,201 @@ const moleculeBank = [
     molecularWeight: 46.07,
     categoryUsage: "Alcohol/Disinfectant",
   },
+  {
+    moleculeName: "Cholesterol",
+    smilesStructure: "CC(C)C(C)C(C)C(C)C(C)C(C)C(C)C(C)(C)C(C)C(C)C(C)C",
+    molecularWeight: 386.65,
+    categoryUsage: "Biomolecule",
+  },
+  {
+    moleculeName: "Vitamin C",
+    smilesStructure: "C(C1C(C(C(C(O1)O)O)O)O)O",
+    molecularWeight: 176.12,
+    categoryUsage: "Nutrient/Antioxidant",
+  },
+  {
+    moleculeName: "Ketamine",
+    smilesStructure: "CC(C1=CC2=C(C=C1)C(=O)N(C2=O)C(C)C(=O)C)",
+    molecularWeight: 237.73,
+    categoryUsage: "Anesthetic",
+  },
+  {
+    moleculeName: "Lactose",
+    smilesStructure: "C1C(C(C(C(C1O)O)O)O)O",
+    molecularWeight: 342.30,
+    categoryUsage: "Sugar/Disaccharide",
+  },
+  {
+    moleculeName: "Serotonin",
+    smilesStructure: "CC(C1=CC=CC=C1C2=CN=C(N2)C(C)C(C(=O)O)C)",
+    molecularWeight: 176.24,
+    categoryUsage: "Neurotransmitter",
+  },
+  {
+    moleculeName: "Dopamine",
+    smilesStructure: "CC(C1=CC=CC=C1C(C2=CC=CC=C2)N)O",
+    molecularWeight: 153.18,
+    categoryUsage: "Neurotransmitter",
+  },
+  {
+    moleculeName: "Sertraline",
+    smilesStructure: "CC(C1=CC=CC=C1C2=CN=C(N2)C(C)C(C(=O)C)C)",
+    molecularWeight: 306.37,
+    categoryUsage: "Antidepressant",
+  },
+  {
+    moleculeName: "Atorvastatin",
+    smilesStructure: "CC(C1=CC=CC=C1C2=CN=C(C=C2)C(C(=O)O)C(=O)C)",
+    molecularWeight: 558.64,
+    categoryUsage: "Cholesterol-lowering agent",
+  },
+  {
+    moleculeName: "Metformin",
+    smilesStructure: "CN(C)C(=N)C(=O)N(C)C(=O)C",
+    molecularWeight: 129.16,
+    categoryUsage: "Antidiabetic",
+  },
+  {
+    moleculeName: "Folic Acid",
+    smilesStructure: "C(C1=CC2=C(C=C1)C(=O)N(C2=O)C(C)C(=O)C)",
+    molecularWeight: 441.40,
+    categoryUsage: "Vitamin",
+  },
+  {
+    moleculeName: "Warfarin",
+    smilesStructure: "CC(C1=CC=C(C=C1)C(=O)O)C(=O)C",
+    molecularWeight: 308.31,
+    categoryUsage: "Anticoagulant",
+  },
+  {
+    moleculeName: "Simvastatin",
+    smilesStructure: "CC(C1=CC=C(C=C1)C(=O)O)C(C)C(=O)C",
+    molecularWeight: 418.57,
+    categoryUsage: "Cholesterol-lowering agent",
+  },
+  {
+    moleculeName: "Clopidogrel",
+    smilesStructure: "CC(C1=CC=C(C=C1)C(=O)O)C(=O)N(C)C",
+    molecularWeight: 321.85,
+    categoryUsage: "Antiplatelet agent",
+  },
+  {
+    moleculeName: "Levothyroxine",
+    smilesStructure: "C1=CC2=C(C=C1)C(=O)N(C2=O)C(C)C(=O)C",
+    molecularWeight: 654.87,
+    categoryUsage: "Thyroid hormone replacement",
+  },
+  {
+    moleculeName: "Amoxicillin",
+    smilesStructure: "CC(C1=CC=CC=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 365.42,
+    categoryUsage: "Antibiotic",
+  },
+  {
+    moleculeName: "Ranitidine",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 314.38,
+    categoryUsage: "Antihistamine",
+  },
+  {
+    moleculeName: "Propranolol",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 259.34,
+    categoryUsage: "Beta-blocker",
+  },
+  {
+    moleculeName: "Lisinopril",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 405.50,
+    categoryUsage: "Antihypertensive",
+  },
+  {
+    moleculeName: "Alprazolam",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 308.27,
+    categoryUsage: "Anxiolytic",
+  },
+  {
+    moleculeName: "Diazepam",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 284.25,
+    categoryUsage: "Anxiolytic",
+  },
+  {
+    moleculeName: "Citalopram",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 324.40,
+    categoryUsage: "Antidepressant",
+  },
+  {
+    moleculeName: "Tamsulosin",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 408.51,
+    categoryUsage: "Alpha-blocker",
+  },
+  {
+    moleculeName: "Oxycodone",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 315.35,
+    categoryUsage: "Pain reliever/Opiate",
+  },
+  {
+    moleculeName: "Carbamazepine",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 236.27,
+    categoryUsage: "Anticonvulsant",
+  },
+  {
+    moleculeName: "Dexamethasone",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 392.46,
+    categoryUsage: "Corticosteroid",
+  },
+  {
+    moleculeName: "Trazodone",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 371.44,
+    categoryUsage: "Antidepressant",
+  },
+  {
+    moleculeName: "Sildenafil",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 474.61,
+    categoryUsage: "Erectile dysfunction",
+  },
+  {
+    moleculeName: "Clozapine",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 326.37,
+    categoryUsage: "Antipsychotic",
+  },
+  {
+    moleculeName: "Quetiapine",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 383.47,
+    categoryUsage: "Antipsychotic",
+  },
+  {
+    moleculeName: "Ziprasidone",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 412.48,
+    categoryUsage: "Antipsychotic",
+  },
+  {
+    moleculeName: "Risperidone",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 410.48,
+    categoryUsage: "Antipsychotic",
+  },
+  {
+    moleculeName: "Lurasidone",
+    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
+    molecularWeight: 412.48,
+    categoryUsage: "Antipsychotic",
+  },
 ];
+
+
 
 const TableOne = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -130,10 +324,12 @@ const TableOne = () => {
 
             <div className="flex items-center gap-3 p-2.5 xl:p-5">
               <div className="flex-shrink-0">
-                <MoleculeStructure
-                  id={`${key}`}
-                  structure={molecule.smilesStructure}
-                />
+                {molecule.smilesStructure && (
+                  <MoleculeStructure
+                    id={`${key}`}
+                    structure={molecule.smilesStructure}
+                  />
+                )}
               </div>
             </div>
 

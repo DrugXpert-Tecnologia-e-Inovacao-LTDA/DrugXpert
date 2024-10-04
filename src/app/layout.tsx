@@ -29,7 +29,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <Head>
-        <script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js" />
+        <script src="https://unpkg.com/@rdkit/rdkit/dist/RDKit_minimal.js" async defer />
       </Head>
       <body suppressHydrationWarning={true}>
         <SessionProvider>

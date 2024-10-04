@@ -1,4 +1,5 @@
-"use client";
+"use client"; // This marks the component as a Client Component
+
 import { useState } from "react";
 import Breadcrumb from "@/components/ComponentHeader/ComponentHeader";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
@@ -10,18 +11,15 @@ const Profile = () => {
   const [uploadSuccess, setUploadSuccess] = useState(false); // Estado para verificar o sucesso do upload
   const [newPhoto, setNewPhoto] = useState(user.photo); // Estado para a nova imagem
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]; // Usando a optional chaining para evitar null
 
     if (file) {
-      // Simular o upload de imagem e alteração da foto de perfil
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Aqui atualizamos a imagem de perfil e marcamos o upload como bem-sucedido
-        setNewPhoto(reader.result);
+        setNewPhoto(reader.result as string); // Certifique-se de que reader.result é do tipo string
         setUploadSuccess(true);
 
-        // Resetar a mensagem de sucesso após alguns segundos
         setTimeout(() => {
           setUploadSuccess(false);
         }, 4000); // 4 segundos
@@ -37,7 +35,6 @@ const Profile = () => {
 
         <div className="overflow-hidden rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="relative z-20 h-35 md:h-65">
-            {/* Removida a imagem de profile cover */}
             <div className="h-full w-full bg-gray-200 rounded-tl-sm rounded-tr-sm">
               {/* Você pode adicionar um fundo ou qualquer conteúdo aqui se necessário */}
             </div>
@@ -46,7 +43,7 @@ const Profile = () => {
             <div className="relative z-30 mx-auto -mt-22 h-40 w-40 rounded-full bg-white/20 p-1 backdrop-blur sm:h-44 sm:w-44 sm:p-3 overflow-hidden">
               <div className="relative drop-shadow-2 rounded-full overflow-hidden">
                 <img
-                  src={newPhoto} // Usa a nova foto caso o upload tenha sido realizado
+                  src={newPhoto}
                   width={160}
                   height={160}
                   alt="profile"
