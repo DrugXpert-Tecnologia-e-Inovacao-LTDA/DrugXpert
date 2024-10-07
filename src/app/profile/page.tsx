@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Breadcrumb from "@/components/ComponentHeader/ComponentHeader";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 import { CameraIcon } from "lucide-react";
 import { useUser } from "../context/UserContext";
 

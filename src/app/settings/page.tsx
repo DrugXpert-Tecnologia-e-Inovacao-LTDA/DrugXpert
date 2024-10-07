@@ -2,7 +2,7 @@
 
 import Breadcrumb from "@/components/ComponentHeader/ComponentHeader";
 import Image from "next/image";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 import DarkModeSwitcher from "@/components/Header/DarkModeSwitcher";
 import { Edit, MailIcon, CameraIcon, User } from "lucide-react";
 import { useSession } from "next-auth/react";
