@@ -1,13 +1,5 @@
 import React from "react";
 
-// Define the ModalProps type
-declare type ModalProps = {
-  id: string;
-  title: string;
-  content: React.ReactNode;
-  onCloseText: string;
-};
-
 // Modal component
 const Modal: React.FC<ModalProps> = ({ id, title, content, onCloseText }) => {
   return (
