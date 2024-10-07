@@ -4,10 +4,10 @@ interface ModalProps {
   id: string;
   title: string;
   content: React.ReactNode;
-  onCloseText?: string;
+  onCloseText?: string; // Optional prop
 }
 
-const Modal: React.FC<ModalProps> = ({ id, title, content, onCloseText }) => {
+const modal: React.FC<ModalProps> = ({ id, title, content, onCloseText }) => {
   const closeModal = () => {
     const dialog = document.getElementById(id) as HTMLDialogElement;
     if (dialog) {
@@ -32,4 +32,4 @@ const Modal: React.FC<ModalProps> = ({ id, title, content, onCloseText }) => {
   );
 };
 
-export default Modal; // Ensure there’s only one default export here
+export default modal; // Ensure there's only one default export here
