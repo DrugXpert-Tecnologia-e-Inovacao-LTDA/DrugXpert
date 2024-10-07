@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useChannel } from "ably/react";
 import { useAbly } from "ably/react";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import DefaultLayout from "@/components/layouts/DefaultLayout";
 import { SendIcon } from "lucide-react";
 import { resizeBase64Img } from "@/lib/utils";
 import {
