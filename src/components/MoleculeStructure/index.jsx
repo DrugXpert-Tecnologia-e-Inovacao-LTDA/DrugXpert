@@ -1,4 +1,3 @@
-// src/components/MoleculeStructure.jsx
 "use client";
 import React, { Component } from "react";
 import _ from "lodash";
@@ -11,12 +10,8 @@ const initRDKit = (() => {
     if (!rdkitLoadingPromise) {
       rdkitLoadingPromise = new Promise((resolve, reject) => {
         initRDKitModule()
-          .then((RDKit) => {
-            resolve(RDKit);
-          })
-          .catch((e) => {
-            reject(e);
-          });
+          .then((RDKit) => resolve(RDKit))
+          .catch((e) => reject(e));
       });
     }
     return rdkitLoadingPromise;
@@ -50,7 +45,6 @@ class MoleculeStructure extends Component {
 
   constructor(props) {
     super(props);
-
     this.MOL_DETAILS = {
       width: this.props.width,
       height: this.props.height,
@@ -66,9 +60,9 @@ class MoleculeStructure extends Component {
     };
   }
 
+  // Ensure drawing only happens once after mounting
   drawOnce = (() => {
     let wasCalled = false;
-
     return () => {
       if (!wasCalled) {
         wasCalled = true;
@@ -77,66 +71,62 @@ class MoleculeStructure extends Component {
     };
   })();
 
+  // Drawing logic
   draw() {
     if (this.props.drawingDelay) {
-      setTimeout(() => {
-        this.drawSVGorCanvas();
-      }, this.props.drawingDelay);
+      setTimeout(() => this.drawSVGorCanvas(), this.props.drawingDelay);
     } else {
       this.drawSVGorCanvas();
     }
   }
 
+  // Handles drawing either SVG or canvas, based on props
   drawSVGorCanvas() {
     const mol = this.RDKit.get_mol(this.props.structure || "invalid");
     const qmol = this.RDKit.get_qmol(this.props.subStructure || "invalid");
-    const isValidMol = this.isValidMol(mol);
 
-    if (this.props.svgMode && isValidMol) {
-      const svg = mol.get_svg_with_highlights(this.getMolDetails(mol, qmol));
-      this.setState({ svg });
-    } else if (isValidMol) {
-      const canvas = document.getElementById(this.props.id);
-      mol.draw_to_canvas_with_highlights(canvas, this.getMolDetails(mol, qmol));
+    if (this.isValidMol(mol)) {
+      if (this.props.svgMode) {
+        const svg = mol.get_svg_with_highlights(this.getMolDetails(mol, qmol));
+        this.setState({ svg });
+      } else {
+        const canvas = document.getElementById(this.props.id);
+        mol.draw_to_canvas_with_highlights(canvas, this.getMolDetails(mol, qmol));
+      }
     }
 
     mol?.delete();
     qmol?.delete();
   }
 
+  // Check if molecule is valid
   isValidMol(mol) {
-    return !!mol;
+    return !!mol && mol.is_valid();
   }
 
+  // Get molecule drawing details including highlights
   getMolDetails(mol, qmol) {
+    let subStructHighlightDetailsMerged = {};
     if (this.isValidMol(mol) && this.isValidMol(qmol)) {
-      const subStructHighlightDetails = JSON.parse(
-        mol.get_substruct_matches(qmol),
-      );
-      const subStructHighlightDetailsMerged = !_.isEmpty(
-        subStructHighlightDetails,
-      )
-        ? subStructHighlightDetails.reduce(
+      const subStructHighlightDetails = JSON.parse(mol.get_substruct_matches(qmol));
+      subStructHighlightDetailsMerged = _.isEmpty(subStructHighlightDetails)
+        ? {}
+        : subStructHighlightDetails.reduce(
             (acc, { atoms, bonds }) => ({
               atoms: [...acc.atoms, ...atoms],
               bonds: [...acc.bonds, ...bonds],
             }),
             { bonds: [], atoms: [] },
-          )
-        : subStructHighlightDetails;
-      return JSON.stringify({
-        ...this.MOL_DETAILS,
-        ...(this.props.extraDetails || {}),
-        ...subStructHighlightDetailsMerged,
-      });
-    } else {
-      return JSON.stringify({
-        ...this.MOL_DETAILS,
-        ...(this.props.extraDetails || {}),
-      });
+          );
     }
+    return JSON.stringify({
+      ...this.MOL_DETAILS,
+      ...(this.props.extraDetails || {}),
+      ...subStructHighlightDetailsMerged,
+    });
   }
 
+  // Load RDKit when the component mounts
   componentDidMount() {
     initRDKit()
       .then((RDKit) => {
@@ -145,15 +135,16 @@ class MoleculeStructure extends Component {
         try {
           this.draw();
         } catch (err) {
-          console.log(err);
+          console.error(err);
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.error("RDKit Load Error:", err);
         this.setState({ rdKitError: true });
       });
   }
 
+  // Redraw on component update when necessary
   componentDidUpdate(prevProps) {
     if (
       !this.state.rdKitError &&
@@ -179,12 +170,11 @@ class MoleculeStructure extends Component {
   }
 
   render() {
-    console.log("props score number:", this.props.scores);
     if (this.state.rdKitError) {
-      return "Error loading renderer.";
+      return <div>Error loading renderer.</div>;
     }
     if (!this.state.rdKitLoaded) {
-      return "Loading renderer...";
+      return <div>Loading renderer...</div>;
     }
 
     const mol = this.RDKit.get_mol(this.props.structure || "invalid");
@@ -192,11 +182,7 @@ class MoleculeStructure extends Component {
     mol?.delete();
 
     if (!isValidMol) {
-      return (
-        <span title={`Cannot render structure: ${this.props.structure}`}>
-          Render Error.
-        </span>
-      );
+      return <span title={`Cannot render structure: ${this.props.structure}`}>Render Error.</span>;
     } else if (this.props.svgMode) {
       return (
         <div
@@ -204,28 +190,20 @@ class MoleculeStructure extends Component {
           className={"molecule-structure-svg " + (this.props.className || "")}
           style={{ width: this.props.width, height: this.props.height }}
           dangerouslySetInnerHTML={{ __html: this.state.svg }}
-        ></div>
+        />
       );
     } else {
       return (
-        <div
-          className={
-            "molecule-canvas-container " + (this.props.className || "")
-          }
-        >
+        <div className={"molecule-canvas-container " + (this.props.className || "")}>
           <canvas
             title={this.props.structure}
             id={this.props.id}
             width={this.props.width}
             height={this.props.height}
-          ></canvas>
+          />
           {this.props.scores ? (
-            <p className="text-red-600 z-50 p-10">
-              Score: {this.props.scores.toFixed(2)}
-            </p>
-          ) : (
-            ""
-          )}
+            <p className="text-red-600 z-50 p-10">Score: {this.props.scores.toFixed(2)}</p>
+          ) : null}
         </div>
       );
     }

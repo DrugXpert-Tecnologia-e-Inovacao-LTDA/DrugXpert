@@ -4,6 +4,26 @@ import MoleculeStructure from "@/components/MoleculeStructure";
 import { useState } from "react";
 import { Search } from "lucide-react";
 
+// Define the type for compound data
+type CompoundData = {
+  MolecularFormula: string;
+  MolecularWeight: number;
+  InChIKey: string;
+  CanonicalSMILES: string;
+  IsomericSMILES: string;
+  IUPACName: string;
+  XLogP: number;
+  ExactMass: number;
+  MonoisotopicMass: number;
+  TPSA: number;
+  Complexity: number;
+  Charge: number;
+  HBondDonorCount: number;
+  HBondAcceptorCount: number;
+  RotatableBondCount: number;
+  HeavyAtomCount: number;
+};
+
 export default function PubChem() {
   const [compoundName, setCompoundName] = useState("");
   const [compoundData, setCompoundData] = useState<CompoundData | null>(null);
@@ -15,12 +35,18 @@ export default function PubChem() {
     setError("");
     setCompoundData(null);
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10-second timeout
+
     try {
       const response = await fetch(
         `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(
           compoundName,
         )}/property/MolecularFormula,MolecularWeight,InChIKey,CanonicalSMILES,IsomericSMILES,IUPACName,XLogP,ExactMass,MonoisotopicMass,TPSA,Complexity,Charge,HBondDonorCount,HBondAcceptorCount,RotatableBondCount,HeavyAtomCount/JSON`,
+        { signal: controller.signal }
       );
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error("Compound not found");
@@ -57,6 +83,7 @@ export default function PubChem() {
         throw new Error("Compound data is not available");
       }
     } catch (err) {
+      console.error(err);
       setError((err as Error).message);
     } finally {
       setLoading(false);
@@ -92,11 +119,13 @@ export default function PubChem() {
         </div>
 
         {error && <p className="text-red-600 mt-6">{error}</p>}
+        {loading && <p>Loading compound data...</p>}
 
         {compoundData && (
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="dark:bg-gray-800  space-y-3 rounded-lg bg-white p-6  shadow-md">
-              <h2 className="text-gray-700 mb-4 text-xl text-black  dark:text-white">
+            {/* Basic Information */}
+            <div className="dark:bg-gray-800 space-y-3 rounded-lg bg-white p-6 shadow-md">
+              <h2 className="text-gray-700 mb-4 text-xl text-black dark:text-white">
                 Basic Information
               </h2>
               <p>
@@ -121,10 +150,12 @@ export default function PubChem() {
                 <strong className="text-gray-600 dark:text-gray-300">
                   Canonical SMILES:
                 </strong>{" "}
-                <MoleculeStructure
-                  id={`${compoundData.CanonicalSMILES}`}
-                  structure={compoundData.CanonicalSMILES}
-                />
+                {compoundData.CanonicalSMILES && (
+                  <MoleculeStructure
+                    id={`${compoundData.CanonicalSMILES}`}
+                    structure={compoundData.CanonicalSMILES}
+                  />
+                )}
               </p>
               <p>
                 <strong className="text-gray-600 dark:text-gray-300">
@@ -140,20 +171,17 @@ export default function PubChem() {
               </p>
             </div>
 
+            {/* Physical Properties */}
             <div className="dark:bg-gray-800 space-y-3 rounded-lg bg-white p-6 shadow-md">
-              <h2 className="text-gray-700 mb-4 text-xl text-black  dark:text-white">
+              <h2 className="text-gray-700 mb-4 text-xl text-black dark:text-white">
                 Physical Properties
               </h2>
               <p>
-                <strong className="text-gray-600 dark:text-gray-300">
-                  XLogP:
-                </strong>{" "}
+                <strong className="text-gray-600 dark:text-gray-300">XLogP:</strong>{" "}
                 {compoundData.XLogP}
               </p>
               <p>
-                <strong className="text-gray-600 dark:text-gray-300">
-                  Exact Mass:
-                </strong>{" "}
+                <strong className="text-gray-600 dark:text-gray-300">Exact Mass:</strong>{" "}
                 {compoundData.ExactMass} g/mol
               </p>
               <p>
@@ -169,21 +197,18 @@ export default function PubChem() {
                 {compoundData.TPSA} Å²
               </p>
               <p>
-                <strong className="text-gray-600 dark:text-gray-300">
-                  Complexity:
-                </strong>{" "}
+                <strong className="text-gray-600 dark:text-gray-300">Complexity:</strong>{" "}
                 {compoundData.Complexity}
               </p>
               <p>
-                <strong className="text-gray-600 dark:text-gray-300">
-                  Charge:
-                </strong>{" "}
+                <strong className="text-gray-600 dark:text-gray-300">Charge:</strong>{" "}
                 {compoundData.Charge}
               </p>
             </div>
 
+            {/* Additional Information */}
             <div className="dark:bg-gray-800 space-y-3 rounded-lg bg-white p-6 shadow-md md:col-span-2">
-              <h2 className="text-gray-700 mb-4 text-xl text-black  dark:text-white">
+              <h2 className="text-gray-700 mb-4 text-xl text-black dark:text-white">
                 Additional Information
               </h2>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

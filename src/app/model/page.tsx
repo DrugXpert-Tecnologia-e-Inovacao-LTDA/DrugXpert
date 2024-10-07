@@ -12,16 +12,14 @@ import { getUserByEmail } from "@/lib/actions/user.actions";
 
 const ModalLayout = () => {
   const { data: session } = useSession();
-  const [smiles, setSmiles] = useState(
-    "CCN(CC)C(=O)[C@@]1(C)Nc2c(ccc3ccccc23)C[C@H]1N(C)C",
-  );
-  const [numMolecules, setNumMolecules] = useState("10");
-  const [minSimilarity, setMinSimilarity] = useState("0.3");
-  const [particles, setParticles] = useState("30");
-  const [iterations, setIterations] = useState("10");
-  const [molecules, setMolecules] = useState([]);
+  const [smiles, setSmiles] = useState("CCN(CC)C(=O)[C@@]1(C)Nc2c(ccc3ccccc23)C[C@H]1N(C)C");
+  const [numMolecules, setNumMolecules] = useState<number>(10);
+  const [minSimilarity, setMinSimilarity] = useState<number>(0.3);
+  const [particles, setParticles] = useState<number>(30);
+  const [iterations, setIterations] = useState<number>(10);
+  const [molecules, setMolecules] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<any[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -30,9 +28,7 @@ const ModalLayout = () => {
         try {
           const user = await getUserByEmail(session.user.email);
           setUserId(user._id);
-          const historyFromServer = await getMoleculeGenerationHistoryByUser(
-            user._id,
-          );
+          const historyFromServer = await getMoleculeGenerationHistoryByUser(user._id);
           setHistory(historyFromServer);
         } catch (error) {
           console.error("Error fetching user or history:", error);
@@ -43,24 +39,20 @@ const ModalLayout = () => {
     fetchUserData();
   }, [session?.user?.email]);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
-    const API_KEY =
-      "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";
-
-    const invokeUrl =
-      "https://health.api.nvidia.com/v1/biology/nvidia/molmim/generate";
+    const invokeUrl = "https://health.api.nvidia.com/v1/biology/nvidia/molmim/generate";
 
     const payload = {
       algorithm: "CMA-ES",
-      num_molecules: parseInt(numMolecules),
+      num_molecules: numMolecules,
       property_name: "QED",
       minimize: false,
-      min_similarity: parseFloat(minSimilarity),
-      particles: parseInt(particles),
-      iterations: parseInt(iterations),
+      min_similarity: minSimilarity,
+      particles: particles,
+      iterations: iterations,
       smi: smiles,
     };
 
@@ -68,12 +60,16 @@ const ModalLayout = () => {
       const response = await fetch(invokeUrl, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${API_KEY}`,
+          Authorization: `Bearer ${process.env.NVIDIA_PUBLIC_API_KEY}`, // Use the API key from .env
           Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
       const generatedMolecules = JSON.parse(data.molecules).map((mol: any) => ({
@@ -87,10 +83,10 @@ const ModalLayout = () => {
         await createMoleculeGenerationHistory(
           {
             smiles,
-            numMolecules: parseInt(numMolecules),
-            minSimilarity: parseFloat(minSimilarity),
-            particles: parseInt(particles),
-            iterations: parseInt(iterations),
+            numMolecules,
+            minSimilarity,
+            particles,
+            iterations,
             generatedMolecules,
           },
           userId,
@@ -143,9 +139,9 @@ const ModalLayout = () => {
                       Number of Molecules
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       value={numMolecules}
-                      onChange={(e) => setNumMolecules(e.target.value)}
+                      onChange={(e) => setNumMolecules(Number(e.target.value))}
                       placeholder="Enter number of molecules"
                       className="w-full rounded-lg border-[1.5px] bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary dark:border-gray-2 dark:bg-[#181818] dark:text-white dark:focus:border-primary"
                     />
@@ -157,9 +153,9 @@ const ModalLayout = () => {
                     Minimum Similarity
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     value={minSimilarity}
-                    onChange={(e) => setMinSimilarity(e.target.value)}
+                    onChange={(e) => setMinSimilarity(Number(e.target.value))}
                     placeholder="Enter minimum similarity"
                     className="w-full rounded-lg border-[1.5px] bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary dark:border-gray-2 dark:bg-[#181818] dark:text-white dark:focus:border-primary"
                   />
@@ -170,9 +166,9 @@ const ModalLayout = () => {
                     Particles
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     value={particles}
-                    onChange={(e) => setParticles(e.target.value)}
+                    onChange={(e) => setParticles(Number(e.target.value))}
                     placeholder="Enter number of particles"
                     className="w-full rounded-lg border-[1.5px] bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary dark:border-gray-2 dark:bg-[#181818] dark:text-white dark:focus:border-primary"
                   />
@@ -183,9 +179,9 @@ const ModalLayout = () => {
                     Iterations
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     value={iterations}
-                    onChange={(e) => setIterations(e.target.value)}
+                    onChange={(e) => setIterations(Number(e.target.value))}
                     placeholder="Enter number of iterations"
                     className="w-full rounded-lg border-[1.5px] bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary dark:border-gray-2 dark:bg-[#181818] dark:text-white dark:focus:border-primary"
                   />
@@ -212,47 +208,28 @@ const ModalLayout = () => {
               {history.map((entry: any, index) => (
                 <div key={index} className="border-b border-stroke py-3">
                   <p className="text-sm text-black dark:text-white">
-                    <span className="font-bold">SMILES:</span> {entry.smiles}
+                    SMILES: {entry.smiles}
                   </p>
                   <p className="text-sm text-black dark:text-white">
-                    <span className="font-bold">Molecules:</span>{" "}
-                    {entry.numMolecules}
+                    Generated Molecules: {entry.generatedMolecules.length}
                   </p>
-                  <p className="text-sm text-black dark:text-white">
-                    <span className="font-bold">Date:</span>{" "}
-                    {new Date(entry.createdAt).toLocaleDateString()}
-                  </p>
-                  <div className="mt-3">
-                    <button
-                      className="text-primary hover:underline"
-                      onClick={() => setMolecules(entry.generatedMolecules)}
-                    >
-                      View Molecules
-                    </button>
-                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-stroke bg-white shadow-default dark:border-[#121212] dark:bg-[#181818]">
+            <h3 className="font-medium text-black dark:text-white">
+              Generated Molecules
+            </h3>
+            <div className="p-6.5">
+              {molecules.map((molecule, index) => (
+                <MoleculeStructure key={index} structure={molecule.structure} />
               ))}
             </div>
           </div>
         </div>
       </div>
-
-      {molecules.length > 0 && (
-        <div className="mt-8 rounded-lg bg-white p-2">
-          <div className="mt-8 flex flex-col  gap-2">
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-              {molecules.map((mol: any, index) => (
-                <MoleculeStructure
-                  key={index}
-                  id={`mol-${index + 1}`}
-                  structure={mol.structure}
-                  scores={mol.score}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </DefaultLayout>
   );
 };
