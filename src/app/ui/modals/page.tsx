@@ -1,19 +1,17 @@
 import React from "react";
 
-// Define the ModalProps interface
 interface ModalProps {
-  id: string;          // Add the id prop
-  title: string;      // Add the title prop
-  content: React.ReactNode; // Content can be any valid React node
-  onCloseText?: string; // Optional prop for close button text
+  id: string;
+  title: string;
+  content: React.ReactNode;
+  onCloseText?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({ id, title, content, onCloseText }) => {
-  // Function to close the modal
   const closeModal = () => {
-    const dialog = document.getElementById(id) as HTMLDialogElement; // Cast to HTMLDialogElement
+    const dialog = document.getElementById(id) as HTMLDialogElement;
     if (dialog) {
-      dialog.close(); // Now TypeScript recognizes the close method
+      dialog.close();
     }
   };
 
@@ -25,7 +23,7 @@ const Modal: React.FC<ModalProps> = ({ id, title, content, onCloseText }) => {
         <div className="modal-action">
           <form method="dialog">
             <button type="button" onClick={closeModal}>
-              {onCloseText || "Close"}  {/* Use the onCloseText prop or default to "Close" */}
+              {onCloseText || "Close"}
             </button>
           </form>
         </div>
@@ -34,4 +32,4 @@ const Modal: React.FC<ModalProps> = ({ id, title, content, onCloseText }) => {
   );
 };
 
-export default Modal;
+export default Modal; // Ensure there’s only one default export here
