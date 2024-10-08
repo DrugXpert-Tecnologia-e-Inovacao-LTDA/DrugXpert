@@ -1,5 +1,4 @@
 "use client";
-import Modal from "@/app/ui/modals/page";
 import React from "react";
 
 interface ComponentHeaderProps {
@@ -36,22 +35,6 @@ const ComponentHeader: React.FC<ComponentHeaderProps> = ({
           </ol>
         </nav>
       )}
-
-      <Modal
-        id="my_modal_1"
-        title="Add New Molecule"
-        content={
-          <form>
-            <div className="p-1">
-              {/* Form content here */}
-              <button className="flex w-full justify-center rounded-lg bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-                Add molecule
-              </button>
-            </div>
-          </form>
-        }
-        onCloseText="Close"
-      />
     </div>
   );
 };
