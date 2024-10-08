@@ -8,7 +8,7 @@ declare type ModalProps = {
 };
 
 // Modal component
-export const Modal: React.FC<ModalProps> = ({ id, title, content, onCloseText }) => {
+const Modal: React.FC<ModalProps> = ({ id, title, content, onCloseText }) => {
   return (
     <dialog id={id} className="modal">
       <div className="modal-box bg-[#ffffff] text-black dark:bg-[#181818] dark:text-white">
@@ -23,3 +23,4 @@ export const Modal: React.FC<ModalProps> = ({ id, title, content, onCloseText })
     </dialog>
   );
 };
+export default Modal
