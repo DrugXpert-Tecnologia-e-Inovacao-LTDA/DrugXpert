@@ -2,7 +2,6 @@
 import React, { useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import ComponentHeader from "@/components/ComponentHeader/ComponentHeader";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import { createUser } from "@/lib/actions/user.actions";
 import { CameraIcon, LoaderCircle, LockIcon, MailIcon, UserIcon } from "lucide-react";
@@ -22,9 +21,7 @@ const SignUp: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isImageVisible, setIsImageVisible] = useState<boolean>(true);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setUser((prev) => ({
       ...prev,
@@ -103,15 +100,18 @@ const SignUp: React.FC = () => {
 
   return (
     <DefaultLayout>
-      <ComponentHeader pageName="Sign Up" />
+      <div className="flex flex-col items-center py-4 mb-7">
+        <img src="/images/logo/logo.png" alt="DrugXpert logo" className="w-18 h-18" />
+        
+      </div>
 
       <div className="flex flex-wrap items-center">
         {isImageVisible && (
-          <div className="hidden xl:block xl:w-1/2 h-full"> {/* Image container half width */}
+          <div className="hidden xl:block xl:w-1/2 h-full">
             <Image
               src="/images/signin-image.png" // Sign Up image path
               alt="Sign Up visual"
-              className="h-full w-full object-cover" // Full height to match form
+              className="h-full w-full object-cover"
               width={600}
               height={600}
             />
@@ -181,7 +181,7 @@ const SignUp: React.FC = () => {
                     value={user.email}
                     onChange={handleInputChange}
                     placeholder="Enter your email"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     required
                     disabled={isLoading}
                   />
@@ -202,7 +202,7 @@ const SignUp: React.FC = () => {
                     value={user.password}
                     onChange={handleInputChange}
                     placeholder="6+ Characters, 1 Capital letter"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     required
                     disabled={isLoading}
                   />
@@ -223,7 +223,7 @@ const SignUp: React.FC = () => {
                     value={user.confirmPassword}
                     onChange={handleInputChange}
                     placeholder="Re-enter your password"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     required
                     disabled={isLoading}
                   />
@@ -242,11 +242,13 @@ const SignUp: React.FC = () => {
                   value={user.userBio}
                   onChange={handleInputChange}
                   placeholder="Tell us about yourself"
-                  className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                ></textarea>
+                  className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  rows={3}
+                  disabled={isLoading}
+                />
               </div>
 
-              <div className="mb-6">
+              <div className="mb-4">
                 <label className="mb-2.5 block font-medium text-black dark:text-white">
                   Profile Picture
                 </label>
@@ -254,8 +256,10 @@ const SignUp: React.FC = () => {
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
-                  className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  className="mb-4"
+                  disabled={isLoading}
                 />
+                {imageFile && <p className="text-sm">Selected: {imageFile.name}</p>}
               </div>
 
               <div className="mb-5">
@@ -290,6 +294,5 @@ const SignUp: React.FC = () => {
     </DefaultLayout>
   );
 };
-
 
 export default SignUp;

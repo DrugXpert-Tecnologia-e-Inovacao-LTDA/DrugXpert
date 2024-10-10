@@ -20,7 +20,6 @@ const SignIn: React.FC = () => {
     setError(null);
     setIsLoading(true);
 
-    // Basic form validation
     if (!email || !password) {
       setError("Please fill in all fields.");
       setIsLoading(false);
@@ -28,7 +27,6 @@ const SignIn: React.FC = () => {
     }
 
     try {
-      // Use NextAuth's signIn function
       const result = await signIn("credentials", {
         redirect: false,
         email,
@@ -51,24 +49,29 @@ const SignIn: React.FC = () => {
 
   return (
     <DefaultLayout>
-      <ComponentHeader pageName="Sign In" />
+      <div className="flex flex-col items-center py-4">
+        <img src="/images/logo/logo.png" alt="DrugXpert logo" className="w-18 h-18" />
+        
+      </div>
 
-      <div className="flex flex-wrap items-center mx-0"> {/* Remove horizontal margins */}
+      
+
+      <div className="flex flex-wrap items-center mx-0">
         {isImageVisible && (
-          <div className="hidden xl:block xl:w-1/2 h-full"> {/* Image container */}
+          <div className="hidden xl:block xl:w-1/2 h-full">
             <img
-              src="/images/login-image.png" // Ensure this path is correct
+              src="/images/login-image.png"
               alt="Sign in visual"
-              className="h-full w-full object-cover" // Use h-full to maintain aspect ratio
+              className="h-full w-full object-cover"
             />
           </div>
         )}
 
-        <div className="w-full xl:w-1/2 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"> {/* Form container */}
+        <div className="w-full xl:w-1/2 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
             <span className="mb-1.5 block font-medium">Start for free</span>
             <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-              Sign In to ProteinBind
+              Sign In to DrugXpert
             </h2>
 
             {error && <div className="text-red-500 mb-4">{error}</div>}

@@ -2,6 +2,11 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb', 
+    },
+  },
   webpack(config, { isServer }) {
     config.plugins.push(
       new CopyPlugin({
@@ -11,7 +16,7 @@ const nextConfig = {
             to: "static/chunks",
           },
         ],
-      }),
+      })
     );
 
     if (!isServer) {
