@@ -189,7 +189,7 @@ const ModalLayout = () => {
 
                 <button
                   type="submit"
-                  className="flex w-full justify-center rounded-lg bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                  className="flex w-full justify-center rounded-lg bg-gradient-to-r from-[#5c8d2f] to-[#215153] p-3 font-medium text-gray hover:bg-opacity-90"
                   disabled={loading}
                 >
                   {loading ? "Generating..." : "Generate Molecules"}

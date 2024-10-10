@@ -261,7 +261,7 @@ const SignUp: React.FC = () => {
               <div className="mb-5">
                 <button
                   type="submit"
-                  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                  className="w-full cursor-pointer rounded-lg border border-primary bg-gradient-to-r from-[#5c8d2f] to-[#215153] p-4 text-white transition hover:bg-opacity-90"
                   disabled={isLoading}
                 >
                   {isLoading ? (

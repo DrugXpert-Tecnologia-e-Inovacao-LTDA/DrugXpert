@@ -28,7 +28,7 @@ const ComponentHeader: React.FC<ComponentHeaderProps> = ({
           <ol className="flex items-center gap-2">
             <li
               onClick={() => openModal("my_modal_1")}
-              className="cursor-pointer rounded-lg bg-primary px-4 py-2 text-center font-medium text-white"
+              className="cursor-pointer rounded-lg bg-gradient-to-r from-[#5c8d2f] to-[#215153] px-4 py-2 text-center font-medium text-white"
             >
               Add Molecule
             </li>

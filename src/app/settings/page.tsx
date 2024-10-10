@@ -245,7 +245,7 @@ const Settings = () => {
                   </div>
 
                   <button
-                    className="w-full rounded-lg bg-primary py-3 font-medium text-gray hover:bg-opacity-90 dark:bg-primary/80 dark:hover:bg-opacity-80"
+                    className="w-full rounded-lg bg-gradient-to-r from-[#5c8d2f] to-[#215153] py-3 font-medium text-gray hover:bg-opacity-90 dark:bg-primary/80 dark:hover:bg-opacity-80"
                     type="submit"
                     disabled={isLoading}
                   >
@@ -291,7 +291,7 @@ const Settings = () => {
                   )}
 
                   <button
-                    className="w-full rounded-lg bg-primary py-3 font-medium text-gray hover:bg-opacity-90 dark:bg-primary/80 dark:hover:bg-opacity-80"
+                    className="w-full rounded-lg bg-gradient-to-r from-[#5c8d2f] to-[#215153] py-3 font-medium text-gray hover:bg-opacity-90 dark:bg-primary/80 dark:hover:bg-opacity-80"
                     type="submit"
                     disabled={isLoading}
                   >
