@@ -7,50 +7,56 @@ import { AtomIcon, MessageCircle, Network, SearchIcon } from "lucide-react";
 
 const DashboardCardMap = dynamic(
   () => import("@/components/Dashboard/components/DashboardCardMap"),
-  {
-    ssr: false,
-  },
+  { ssr: false }
 );
 
 const DashboardCardChat = dynamic(
   () => import("@/components/Dashboard/components/DashboardCardChat"),
-  {
-    ssr: false,
-  },
+  { ssr: false }
 );
 
 const Index: React.FC = () => {
   return (
-    <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CTACard subtitle="get access to more molecules" title="Molecule Bank">
+    <div className="px-4 py-6 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <CTACard
+          subtitle="Get access to more molecules"
+          title="Molecule Bank"
+          href="/molecule-bank"
+        >
           <AtomIcon />
         </CTACard>
+
         <CTACard
-          subtitle="get access to more molecules"
+          subtitle="Generate molecules easily"
           title="Generate Molecule"
+          href="/model"
         >
           <Network />
         </CTACard>
+
         <CTACard
-          subtitle="get access to more molecules"
+          subtitle="Search chemical compounds"
           title="Search Compounds"
+          href="/research"
         >
           <SearchIcon />
         </CTACard>
+
         <CTACard
-          subtitle="get access to more molecules"
+          subtitle="Collaborate with other researchers"
           title="Collaborative Research"
+          href="/message"
         >
           <MessageCircle />
         </CTACard>
       </div>
 
-      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
         <DashboardCardChat />
         <DashboardCardMap />
       </div>
-    </>
+    </div>
   );
 };
 

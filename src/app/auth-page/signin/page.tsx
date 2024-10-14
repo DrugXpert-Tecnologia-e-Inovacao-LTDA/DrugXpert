@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { LoaderCircle, LockIcon, MailIcon } from "lucide-react";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
-import ComponentHeader from "@/components/ComponentHeader/ComponentHeader";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
@@ -50,15 +49,16 @@ const SignIn: React.FC = () => {
   return (
     <DefaultLayout>
       <div className="flex flex-col items-center py-4">
-        <img src="/images/logo/logo.png" alt="DrugXpert logo" className="w-18 h-18" />
-        
+        <img
+          src="/images/logo/logo.png"
+          alt="DrugXpert logo"
+          className="w-16 h-16 md:w-18 md:h-18"
+        />
       </div>
 
-      
-
-      <div className="flex flex-wrap items-center mx-0">
+      <div className="flex flex-col lg:flex-row items-center px-4 lg:px-0 gap-6">
         {isImageVisible && (
-          <div className="hidden xl:block xl:w-1/2 h-full">
+          <div className="hidden lg:block lg:w-1/2">
             <img
               src="/images/login-image.png"
               alt="Sign in visual"
@@ -67,89 +67,88 @@ const SignIn: React.FC = () => {
           </div>
         )}
 
-        <div className="w-full xl:w-1/2 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-          <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-            <span className="mb-1.5 block font-medium">Start for free</span>
-            <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+        <div className="w-full lg:w-1/2 max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:border-strokedark dark:bg-boxdark">
+          <div className="mb-6 text-center">
+            <span className="block font-medium">Start for free</span>
+            <h2 className="text-2xl font-bold text-black dark:text-white">
               Sign In to DrugXpert
             </h2>
-
-            {error && <div className="text-red-500 mb-4">{error}</div>}
-
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  Email
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    disabled={isLoading}
-                  />
-                  <span className="absolute right-4 top-4">
-                    <MailIcon />
-                  </span>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="6+ Characters, 1 Capital letter"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    disabled={isLoading}
-                  />
-                  <span className="absolute right-4 top-4">
-                    <LockIcon />
-                  </span>
-                </div>
-              </div>
-
-              <div className="mb-5">
-                <button
-                  type="submit"
-                  className="w-full cursor-pointer rounded-lg border border-primary  bg-gradient-to-r from-[#5c8d2f] to-[#215153] p-4 text-white transition hover:bg-opacity-90"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <span className="flex items-center justify-center">
-                      <LoaderCircle className="mr-2 animate-spin" /> Signing
-                      In...
-                    </span>
-                  ) : (
-                    "Sign In"
-                  )}
-                </button>
-              </div>
-
-              <div className="mt-6 text-center">
-                <p>
-                  Don’t have an account?{" "}
-                  <Link href="/auth-page/signup" className="text-primary">
-                    Sign Up
-                  </Link>
-                </p>
-                <p>
-                  Forgot Password?{" "}
-                  <Link href="/forget-password" className="text-primary">
-                    Reset
-                  </Link>
-                </p>
-              </div>
-            </form>
           </div>
+
+          {error && <div className="text-red-500 mb-4">{error}</div>}
+
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label className="block mb-2 font-medium text-black dark:text-white">
+                Email
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="w-full border border-stroke py-3 px-4 rounded-lg dark:border-strokedark dark:bg-form-input dark:text-white"
+                  required
+                  disabled={isLoading}
+                />
+                <span className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <MailIcon />
+                </span>
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <label className="block mb-2 font-medium text-black dark:text-white">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="6+ Characters, 1 Capital letter"
+                  className="w-full border border-stroke py-3 px-4 rounded-lg dark:border-strokedark dark:bg-form-input dark:text-white"
+                  required
+                  disabled={isLoading}
+                />
+                <span className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <LockIcon />
+                </span>
+              </div>
+            </div>
+
+            <div className="mb-5">
+              <button
+                type="submit"
+                className="w-full rounded-lg bg-gradient-to-r from-[#5c8d2f] to-[#215153] py-3 text-white transition hover:bg-opacity-90"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center justify-center">
+                    <LoaderCircle className="animate-spin mr-2" /> Signing In...
+                  </span>
+                ) : (
+                  "Sign In"
+                )}
+              </button>
+            </div>
+
+            <div className="mt-6 text-center">
+              <p>
+                Don’t have an account?{" "}
+                <Link href="/auth-page/signup" className="text-primary">
+                  Sign Up
+                </Link>
+              </p>
+              <p>
+                Forgot Password?{" "}
+                <Link href="/forget-password" className="text-primary">
+                  Reset
+                </Link>
+              </p>
+            </div>
+          </form>
         </div>
       </div>
     </DefaultLayout>

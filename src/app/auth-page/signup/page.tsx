@@ -15,7 +15,6 @@ const SignUp: React.FC = () => {
     confirmPassword: "",
     userBio: "",
   });
-
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -23,10 +22,7 @@ const SignUp: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setUser((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setUser((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,13 +31,7 @@ const SignUp: React.FC = () => {
   };
 
   const validateForm = useCallback(() => {
-    if (
-      !user.email ||
-      !user.firstName ||
-      !user.lastName ||
-      !user.password ||
-      !user.confirmPassword
-    ) {
+    if (!user.email || !user.firstName || !user.lastName || !user.password || !user.confirmPassword) {
       return "Please fill in all the fields.";
     }
     if (user.password !== user.confirmPassword) {
@@ -79,7 +69,6 @@ const SignUp: React.FC = () => {
       const createdUser = await createUser({ ...user, photo: base64Image });
       console.log(createdUser);
 
-      // Reset form
       setUser({
         email: "",
         firstName: "",
@@ -90,7 +79,7 @@ const SignUp: React.FC = () => {
       });
       setImageFile(null);
       setIsLoading(false);
-      setIsImageVisible(false); // Hide image on successful signup
+      setIsImageVisible(false);
     } catch (error) {
       console.error("Error registering user:", error);
       setErrors("Registration failed.");
@@ -101,15 +90,14 @@ const SignUp: React.FC = () => {
   return (
     <DefaultLayout>
       <div className="flex flex-col items-center py-4 mb-7">
-        <img src="/images/logo/logo.png" alt="DrugXpert logo" className="w-18 h-18" />
-        
+        <img src="/images/logo/logo.png" alt="DrugXpert logo" className="w-16 h-16 md:w-18 md:h-18" />
       </div>
 
-      <div className="flex flex-wrap items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center px-4 lg:px-0">
         {isImageVisible && (
-          <div className="hidden xl:block xl:w-1/2 h-full">
+          <div className="hidden lg:block">
             <Image
-              src="/images/signin-image.png" // Sign Up image path
+              src="/images/signin-image.png"
               alt="Sign Up visual"
               className="h-full w-full object-cover"
               width={600}
@@ -118,177 +106,77 @@ const SignUp: React.FC = () => {
           </div>
         )}
 
-        <div className="mx-auto w-full xl:w-1/2 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-          <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
-            <span className="mb-1.5 block font-medium">Start for free</span>
-            <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-              Sign Up to ProteinBind
-            </h2>
-
-            {errors && <div className="text-red-500 mb-4">{errors}</div>}
-
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  First Name
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={user.firstName}
-                    onChange={handleInputChange}
-                    placeholder="Enter your first name"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    disabled={isLoading}
-                  />
-                  <span className="absolute right-4 top-4">
-                    <UserIcon />
-                  </span>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  Last Name
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={user.lastName}
-                    onChange={handleInputChange}
-                    placeholder="Enter your last name"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    disabled={isLoading}
-                  />
-                  <span className="absolute right-4 top-4">
-                    <UserIcon />
-                  </span>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  Email
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    name="email"
-                    value={user.email}
-                    onChange={handleInputChange}
-                    placeholder="Enter your email"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    disabled={isLoading}
-                  />
-                  <span className="absolute right-4 top-4">
-                    <MailIcon />
-                  </span>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    type="password"
-                    name="password"
-                    value={user.password}
-                    onChange={handleInputChange}
-                    placeholder="6+ Characters, 1 Capital letter"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    disabled={isLoading}
-                  />
-                  <span className="absolute right-4 top-4">
-                    <LockIcon />
-                  </span>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={user.confirmPassword}
-                    onChange={handleInputChange}
-                    placeholder="Re-enter your password"
-                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    required
-                    disabled={isLoading}
-                  />
-                  <span className="absolute right-4 top-4">
-                    <LockIcon />
-                  </span>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  Bio
-                </label>
-                <textarea
-                  name="userBio"
-                  value={user.userBio}
-                  onChange={handleInputChange}
-                  placeholder="Tell us about yourself"
-                  className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  rows={3}
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                  Profile Picture
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="mb-4"
-                  disabled={isLoading}
-                />
-                {imageFile && <p className="text-sm">Selected: {imageFile.name}</p>}
-              </div>
-
-              <div className="mb-5">
-                <button
-                  type="submit"
-                  className="w-full cursor-pointer rounded-lg border border-primary bg-gradient-to-r from-[#5c8d2f] to-[#215153] p-4 text-white transition hover:bg-opacity-90"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <span className="flex items-center justify-center">
-                      <LoaderCircle className="mr-2 animate-spin" /> Signing
-                      Up...
-                    </span>
-                  ) : (
-                    "Sign Up"
-                  )}
-                </button>
-              </div>
-
-              <div className="mt-6 text-center">
-                <p>
-                  Already have an account?{" "}
-                  <Link href="/auth-page/signin" className="text-primary">
-                    Sign In
-                  </Link>
-                </p>
-              </div>
-            </form>
+        <div className="w-full max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:bg-boxdark">
+          <div className="mb-6 text-center">
+            <h2 className="text-2xl font-bold text-black dark:text-white">Sign Up to DrugXpert</h2>
+            <p className="text-gray-500">Start for free</p>
           </div>
+
+          {errors && <div className="text-red-500 mb-4">{errors}</div>}
+
+          <form onSubmit={handleSubmit}>
+            {["firstName", "lastName", "email", "password", "confirmPassword"].map((field, idx) => (
+              <div className="mb-4" key={idx}>
+                <label className="block font-medium text-black dark:text-white mb-1 capitalize">
+                  {field.replace(/([A-Z])/g, " $1")}
+                </label>
+                <div className="relative">
+                  <input
+                    type={field.includes("password") ? "password" : "text"}
+                    name={field}
+                    value={(user as any)[field]}
+                    onChange={handleInputChange}
+                    placeholder={`Enter your ${field}`}
+                    className="w-full border border-stroke py-3 px-4 rounded-lg dark:border-strokedark dark:bg-form-input dark:text-white"
+                    required
+                    disabled={isLoading}
+                  />
+                  <span className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    {field.includes("password") ? <LockIcon /> : <UserIcon />}
+                  </span>
+                </div>
+              </div>
+            ))}
+
+            <div className="mb-4">
+              <label className="block font-medium text-black dark:text-white mb-1">Bio</label>
+              <textarea
+                name="userBio"
+                value={user.userBio}
+                onChange={handleInputChange}
+                className="w-full border py-3 px-4 rounded-lg dark:border-strokedark dark:bg-form-input dark:text-white"
+                rows={3}
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="mb-6">
+              <label className="block font-medium text-black dark:text-white mb-1">Profile Picture</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full"
+                disabled={isLoading}
+              />
+              {imageFile && <p className="text-sm mt-2">Selected: {imageFile.name}</p>}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-[#5c8d2f] to-[#215153] text-white py-3 rounded-lg hover:bg-opacity-90 transition"
+              disabled={isLoading}
+            >
+              {isLoading ? <LoaderCircle className="animate-spin mx-auto" /> : "Sign Up"}
+            </button>
+
+            <p className="mt-6 text-center">
+              Already have an account?{" "}
+              <Link href="/auth-page/signin" className="text-primary">
+                Sign In
+              </Link>
+            </p>
+          </form>
         </div>
       </div>
     </DefaultLayout>
