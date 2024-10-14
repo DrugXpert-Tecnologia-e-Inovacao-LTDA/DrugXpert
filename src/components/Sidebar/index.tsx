@@ -15,6 +15,8 @@ import {
   Settings,
   MessageSquareText,
   ChevronLeft,
+  BookMarked,
+  Rss,
 } from "lucide-react";
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -50,11 +52,21 @@ const menuGroups = [
         label: "Messages",
         route: "/message",
       },
+      {
+        icon: <Rss  size={25} />,
+        label: "Forum",
+        route: "https://forum.drugxpert.net/",
+      },
     ],
   },
   {
     name: "OTHERS",
     menuItems: [
+      {
+        icon: <BookMarked  size={25} />,
+        label: "Documentation",
+        route: "https://docs.drugxpert.net/",
+      },
       {
         icon: <Settings size={25} />,
         label: "Settings",
