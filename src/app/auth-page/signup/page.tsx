@@ -1,12 +1,49 @@
 "use client";
 import React, { useState, useCallback } from "react";
+import { useRouter } from "next/navigation"; // Import do hook useRouter
 import Link from "next/link";
 import Image from "next/image";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import { createUser } from "@/lib/actions/user.actions";
-import { CameraIcon, LoaderCircle, LockIcon, MailIcon, UserIcon } from "lucide-react";
+import { 
+  CameraIcon, LoaderCircle, LockIcon, MailIcon, UserIcon, 
+  Eye, EyeOff, Mail 
+} from "lucide-react";
+
+// Componente de Popup
+const EmailVerificationPopup = ({ onClose }: { onClose: () => void }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="bg-white p-6 rounded-lg shadow-md w-90 relative">
+      <button 
+        className="absolute top-2 right-2 text-gray-500 hover:text-black" 
+        onClick={onClose}
+      >
+        ✕
+      </button>
+      <h2 className="text-xl font-semibold mb-4 text-center">Verify your Email</h2>
+      <p className="text-center text-gray-600 mb-6">
+        Please check your email and click the verification link.
+      </p>
+      <div className="flex justify-around">
+        <button 
+          className="bg-gradient-to-r from-[#5c8d2f] to-[#215153] text-white px-7 py-2 rounded-md hover:bg-green-600 transition"
+          onClick={onClose}
+        >
+          Ok
+        </button>
+        <button 
+          className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400 transition border border-black"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+);
 
 const SignUp: React.FC = () => {
+  const router = useRouter(); // Instância do router
   const [user, setUser] = useState({
     email: "",
     firstName: "",
@@ -19,6 +56,9 @@ const SignUp: React.FC = () => {
   const [errors, setErrors] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isImageVisible, setIsImageVisible] = useState<boolean>(true);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [isPopupVisible, setIsPopupVisible] = useState<boolean>(false); // Estado para o popup
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -69,6 +109,7 @@ const SignUp: React.FC = () => {
       const createdUser = await createUser({ ...user, photo: base64Image });
       console.log(createdUser);
 
+      // Limpar o formulário
       setUser({
         email: "",
         firstName: "",
@@ -80,11 +121,19 @@ const SignUp: React.FC = () => {
       setImageFile(null);
       setIsLoading(false);
       setIsImageVisible(false);
+
+      // Exibir o popup de verificação
+      setIsPopupVisible(true);
     } catch (error) {
       console.error("Error registering user:", error);
       setErrors("Registration failed.");
       setIsLoading(false);
     }
+  };
+
+  const handlePopupClose = () => {
+    setIsPopupVisible(false);
+    router.push("/auth-page/signin"); // Redirecionar para a página de Sign In quando o popup for fechado
   };
 
   return (
@@ -115,14 +164,14 @@ const SignUp: React.FC = () => {
           {errors && <div className="text-red-500 mb-4">{errors}</div>}
 
           <form onSubmit={handleSubmit}>
-            {["firstName", "lastName", "email", "password", "confirmPassword"].map((field, idx) => (
+            {["firstName", "lastName", "email"].map((field, idx) => (
               <div className="mb-4" key={idx}>
                 <label className="block font-medium text-black dark:text-white mb-1 capitalize">
                   {field.replace(/([A-Z])/g, " $1")}
                 </label>
                 <div className="relative">
                   <input
-                    type={field.includes("password") ? "password" : "text"}
+                    type="text"
                     name={field}
                     value={(user as any)[field]}
                     onChange={handleInputChange}
@@ -132,7 +181,33 @@ const SignUp: React.FC = () => {
                     disabled={isLoading}
                   />
                   <span className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                    {field.includes("password") ? <LockIcon /> : <UserIcon />}
+                    {field === "email" ? <Mail /> : <UserIcon />}
+                  </span>
+                </div>
+              </div>
+            ))}
+
+            {["password", "confirmPassword"].map((field, idx) => (
+              <div className="mb-4" key={idx}>
+                <label className="block font-medium text-black dark:text-white mb-1 capitalize">
+                  {field.replace(/([A-Z])/g, " $1")}
+                </label>
+                <div className="relative">
+                  <input
+                    type={field === "password" ? (showPassword ? "text" : "password") : showConfirmPassword ? "text" : "password"}
+                    name={field}
+                    value={(user as any)[field]}
+                    onChange={handleInputChange}
+                    placeholder={`Enter your ${field}`}
+                    className="w-full border border-stroke py-3 px-4 rounded-lg dark:border-strokedark dark:bg-form-input dark:text-white"
+                    required
+                    disabled={isLoading}
+                  />
+                  <span
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                    onClick={() => field === "password" ? setShowPassword(!showPassword) : setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {field === "password" ? (showPassword ? <EyeOff /> : <Eye />) : (showConfirmPassword ? <EyeOff /> : <Eye />)}
                   </span>
                 </div>
               </div>
@@ -179,6 +254,8 @@ const SignUp: React.FC = () => {
           </form>
         </div>
       </div>
+
+      {isPopupVisible && <EmailVerificationPopup onClose={handlePopupClose} />} {/* Popup de verificação */}
     </DefaultLayout>
   );
 };

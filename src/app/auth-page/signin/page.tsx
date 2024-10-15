@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { LoaderCircle, LockIcon, MailIcon } from "lucide-react";
+import { LoaderCircle, LockIcon, MailIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -9,10 +9,13 @@ import { signIn } from "next-auth/react";
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); 
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isImageVisible, setIsImageVisible] = useState<boolean>(true);
   const router = useRouter();
+
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,7 +107,7 @@ const SignIn: React.FC = () => {
               </label>
               <div className="relative">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="6+ Characters, 1 Capital letter"
@@ -112,8 +115,11 @@ const SignIn: React.FC = () => {
                   required
                   disabled={isLoading}
                 />
-                <span className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  <LockIcon />
+                <span
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                 </span>
               </div>
             </div>
