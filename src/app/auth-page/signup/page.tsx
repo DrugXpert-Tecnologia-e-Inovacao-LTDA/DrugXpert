@@ -5,17 +5,18 @@ import Link from "next/link";
 import Image from "next/image";
 import DefaultLayout from "@/components/layouts/DefaultLayout";
 import { createUser } from "@/lib/actions/user.actions";
-import { 
-  CameraIcon, LoaderCircle, LockIcon, MailIcon, UserIcon, 
-  Eye, EyeOff, Mail 
+import { signIn } from "next-auth/react"; // Importando signIn do next-auth
+import {
+  CameraIcon, LoaderCircle, LockIcon, MailIcon, UserIcon,
+  Eye, EyeOff, Mail
 } from "lucide-react";
 
 // Componente de Popup
 const EmailVerificationPopup = ({ onClose }: { onClose: () => void }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
     <div className="bg-white p-6 rounded-lg shadow-md w-90 relative">
-      <button 
-        className="absolute top-2 right-2 text-gray-500 hover:text-black" 
+      <button
+        className="absolute top-2 right-2 text-gray-500 hover:text-black"
         onClick={onClose}
       >
         ✕
@@ -25,13 +26,13 @@ const EmailVerificationPopup = ({ onClose }: { onClose: () => void }) => (
         Please check your email and click the verification link.
       </p>
       <div className="flex justify-around">
-        <button 
+        <button
           className="bg-gradient-to-r from-[#5c8d2f] to-[#215153] text-white px-7 py-2 rounded-md hover:bg-green-600 transition"
           onClick={onClose}
         >
           Ok
         </button>
-        <button 
+        <button
           className="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400 transition border border-black"
           onClick={onClose}
         >
@@ -136,6 +137,10 @@ const SignUp: React.FC = () => {
     router.push("/auth-page/signin"); // Redirecionar para a página de Sign In quando o popup for fechado
   };
 
+  const handleGoogleSignIn = () => {
+    signIn("google"); // Chamada para login com Google via next-auth
+  };
+
   return (
     <DefaultLayout>
       <div className="flex flex-col items-center py-4 mb-7">
@@ -155,7 +160,7 @@ const SignUp: React.FC = () => {
           </div>
         )}
 
-        <div className="w-full max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:bg-boxdark">
+        <div className="w-full max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:bg-boxdark mb-15 lg:mb-0"> {/* Margem ajustada aqui */}
           <div className="mb-6 text-center">
             <h2 className="text-2xl font-bold text-black dark:text-white">Sign Up to DrugXpert</h2>
             <p className="text-gray-500">Start for free</p>
@@ -219,39 +224,45 @@ const SignUp: React.FC = () => {
                 name="userBio"
                 value={user.userBio}
                 onChange={handleInputChange}
-                className="w-full border py-3 px-4 rounded-lg dark:border-strokedark dark:bg-form-input dark:text-white"
+                className="w-full border border-stroke py-3 px-4 rounded-lg dark:border-strokedark dark:bg-form-input dark:text-white"
+                placeholder="Tell us about yourself"
                 rows={3}
-                disabled={isLoading}
               />
             </div>
 
-            <div className="mb-6">
+            <div className="mb-4">
               <label className="block font-medium text-black dark:text-white mb-1">Profile Picture</label>
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleFileChange}
-                className="w-full"
-                disabled={isLoading}
+                className="w-full border border-stroke py-3 px-4 rounded-lg dark:border-strokedark dark:bg-form-input dark:text-white"
               />
-              {imageFile && <p className="text-sm mt-2">Selected: {imageFile.name}</p>}
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#5c8d2f] to-[#215153] text-white py-3 rounded-lg hover:bg-opacity-90 transition"
+              className="w-full bg-gradient-to-r from-[#5c8d2f] to-[#215153] text-white py-3 rounded-lg hover:bg-opacity-90 transition mt-4"
               disabled={isLoading}
             >
               {isLoading ? <LoaderCircle className="animate-spin mx-auto" /> : "Sign Up"}
             </button>
-
-            <p className="mt-6 text-center">
-              Already have an account?{" "}
-              <Link href="/auth-page/signin" className="text-primary">
-                Sign In
-              </Link>
-            </p>
           </form>
+
+          <button
+            onClick={handleGoogleSignIn}
+            className="w-full mt-4 bg-white border border-gray-300 text-black py-3 rounded-lg hover:bg-gray-100 transition flex items-center justify-center gap-2"
+          >
+            <img src="/images/google-icon.svg" alt="Google Icon" className="w-5 h-5" />
+            Sign Up with Google
+          </button>
+
+          <p className="mt-6 text-center">
+            Already have an account?{" "}
+            <Link href="/auth-page/signin" className="text-primary">
+              Sign In
+            </Link>
+          </p>
         </div>
       </div>
 

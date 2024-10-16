@@ -9,7 +9,7 @@ import { signIn } from "next-auth/react";
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isImageVisible, setIsImageVisible] = useState<boolean>(true);
@@ -47,6 +47,10 @@ const SignIn: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleSignIn = async () => {
+    await signIn("google", { callbackUrl: "/dashboard" });
   };
 
   return (
@@ -139,6 +143,15 @@ const SignIn: React.FC = () => {
                 )}
               </button>
             </div>
+
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="mt-4 w-full flex items-center justify-center border py-2 rounded-lg"
+            >
+              <img src="/images/google-icon.svg" alt="Google" className="w-5 h-5 mr-2" />
+              Sign In with Google
+            </button>
 
             <div className="mt-6 text-center">
               <p>
