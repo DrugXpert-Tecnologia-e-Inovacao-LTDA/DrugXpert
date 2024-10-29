@@ -147,7 +147,7 @@ const SignUp: React.FC = () => {
         <img src="/images/logo/logo.png" alt="DrugXpert logo" className="w-16 h-16 md:w-18 md:h-18" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center px-4 lg:px-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 items-center px-4 lg:px-0 mb-7">
         {isImageVisible && (
           <div className="hidden lg:block">
             <Image

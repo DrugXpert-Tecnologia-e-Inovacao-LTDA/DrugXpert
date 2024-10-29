@@ -63,7 +63,7 @@ const SignIn: React.FC = () => {
         />
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center px-4 lg:px-0 gap-6">
+      <div className="flex flex-col lg:flex-row items-center px-4 lg:px-0 ">
         {isImageVisible && (
           <div className="hidden lg:block lg:w-1/2">
             <img
@@ -74,7 +74,7 @@ const SignIn: React.FC = () => {
           </div>
         )}
 
-        <div className="w-full lg:w-1/2 max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:border-strokedark dark:bg-boxdark">
+        <div className="w-full lg:w-3/5 max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md dark:border-strokedark dark:bg-boxdark">
           <div className="mb-6 text-center">
             <span className="block font-medium">Start for free</span>
             <h2 className="text-2xl font-bold text-black dark:text-white">

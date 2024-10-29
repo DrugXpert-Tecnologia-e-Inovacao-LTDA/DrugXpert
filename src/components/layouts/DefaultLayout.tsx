@@ -75,7 +75,7 @@ export default function DefaultLayout({
             <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           </div>
         )}
-        <main className="flex-1 overflow-auto bg-white dark:bg-[#121212] p-4 sm:p-6 lg:p-10">
+        <main className="overflow-auto dark:bg-[#121212] p-4 sm:p-6 lg:p-10">
           {children}
         </main>
       </div>
