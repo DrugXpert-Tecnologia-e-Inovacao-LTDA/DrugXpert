@@ -9,21 +9,23 @@ const UserSchema = new Schema(
     },
     fullname: {
       type: String,
-      unique: false,
       required: false,
     },
     photo: {
       type: String,
-      required: true,
+      required: false,
     },
-    firstName: { type: String },
+    firstName: {
+      type: String,
+      required: false,
+    },
     lastName: {
       type: String,
+      required: false,
     },
-
     password: {
       type: String,
-      required: true,
+      required: false, // Senha não é obrigatória para usuários do Google OAuth
     },
     isEmailVerified: {
       type: Boolean,
@@ -33,14 +35,31 @@ const UserSchema = new Schema(
       type: String,
       default: "",
     },
-    verificationToken: String,
-    verificationExpires: Date,
-    resetPasswordToken: String,
-    resetPasswordExpires: Date,
+    verificationToken: {
+      type: String,
+      required: false,
+    },
+    verificationExpires: {
+      type: Date,
+      required: false,
+    },
+    resetPasswordToken: {
+      type: String,
+      required: false,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      required: false,
+    },
+    googleId: { // Novo campo para armazenar o ID do Google
+      type: String,
+      required: false,
+      unique: true,
+    },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 const User = models?.User || model("User", UserSchema);
