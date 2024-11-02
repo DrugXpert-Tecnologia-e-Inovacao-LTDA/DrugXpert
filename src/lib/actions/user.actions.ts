@@ -7,14 +7,14 @@ import { connectToDatabase } from "../database/mongoose";
 import { handleError } from "../utils";
 import { sendVerificationEmail, sendResetPasswordEmail } from "./email.actions";
 
-// Params types for creating and updating a user
+// Tipos de parâmetros para criação e atualização de usuário
 interface CreateUserParams {
   email: string;
   fullname?: string;
   photo?: string;
   firstName?: string;
   lastName?: string;
-  password?: string; // Optional for OAuth users
+  password?: string; // Opcional para usuários OAuth
   userBio?: string;
 }
 
@@ -26,7 +26,7 @@ interface UpdateUserParams {
   userBio?: string;
 }
 
-// Create user function
+// Função para criar usuário
 export async function createUser(user: CreateUserParams) {
   try {
     await connectToDatabase();
@@ -37,7 +37,7 @@ export async function createUser(user: CreateUserParams) {
     }
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(user.password!, salt); // Use the password if provided
+    const hashedPassword = await bcrypt.hash(user.password!, salt);
 
     const newUser = await User.create({
       ...user,
@@ -62,7 +62,7 @@ export async function createUser(user: CreateUserParams) {
   }
 }
 
-// Login user function
+// Função para login do usuário
 export async function loginUser(email: string, password: string) {
   try {
     await connectToDatabase();
@@ -70,7 +70,7 @@ export async function loginUser(email: string, password: string) {
     const user = await User.findOne({ email });
     if (!user) throw new Error("Invalid credentials");
 
-    if (user.password) { // Check if user has a password
+    if (user.password) {
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) throw new Error("Invalid credentials");
     }
@@ -81,31 +81,35 @@ export async function loginUser(email: string, password: string) {
   }
 }
 
-// New function for creating or updating a user with Google OAuth
+// Função para criar ou atualizar usuário com Google OAuth
 export async function createOrUpdateUserWithGoogle(profile: any) {
   try {
     await connectToDatabase();
 
-    // Check if the user already exists by Google ID or email
     const existingUser = await User.findOne({
       $or: [{ googleId: profile.id }, { email: profile.email }],
     });
 
     if (existingUser) {
-      // User exists, return the user
       return JSON.parse(JSON.stringify(existingUser));
     }
 
-    // Create a new user if they do not exist
     const newUser = await User.create({
       email: profile.email,
       fullname: profile.name,
       photo: profile.picture,
       firstName: profile.given_name,
       lastName: profile.family_name,
-      googleId: profile.id, // Store Google ID
-      isEmailVerified: true, // Automatically verify email for OAuth users
+      googleId: profile.id,
+      isEmailVerified: false, // Requer verificação de e-mail
     });
+
+    const verificationUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/verify-email?token=${newUser._id}`;
+    await sendVerificationEmail(
+      newUser.email,
+      newUser.firstName || "User",
+      verificationUrl,
+    );
 
     return JSON.parse(JSON.stringify(newUser));
   } catch (error) {
@@ -113,7 +117,7 @@ export async function createOrUpdateUserWithGoogle(profile: any) {
   }
 }
 
-// Email verification function
+// Função para verificação de e-mail
 export async function verifyEmail(token: string) {
   try {
     await connectToDatabase();
@@ -130,7 +134,7 @@ export async function verifyEmail(token: string) {
   }
 }
 
-// Request password reset function
+// Função para solicitar redefinição de senha
 export async function requestPasswordReset(email: string) {
   try {
     await connectToDatabase();
@@ -151,7 +155,7 @@ export async function requestPasswordReset(email: string) {
   }
 }
 
-// Reset password function
+// Função para redefinir senha
 export async function resetPassword(token: string, newPassword: string) {
   try {
     await connectToDatabase();
@@ -171,7 +175,7 @@ export async function resetPassword(token: string, newPassword: string) {
   }
 }
 
-// Get user by ID function
+// Função para obter usuário por ID
 export async function getUserById(userId: string) {
   try {
     await connectToDatabase();
@@ -183,7 +187,7 @@ export async function getUserById(userId: string) {
   }
 }
 
-// Update user function
+// Função para atualizar usuário
 export async function updateUser(Id: string, user: UpdateUserParams) {
   try {
     await connectToDatabase();
@@ -197,7 +201,7 @@ export async function updateUser(Id: string, user: UpdateUserParams) {
   }
 }
 
-// Delete user function
+// Função para deletar usuário
 export async function deleteUser(Id: string) {
   try {
     await connectToDatabase();
@@ -216,7 +220,7 @@ export async function deleteUser(Id: string) {
   }
 }
 
-// Update user credits function
+// Função para atualizar créditos do usuário
 export async function updateCredits(userId: string, creditFee: number) {
   try {
     await connectToDatabase();
@@ -235,7 +239,7 @@ export async function updateCredits(userId: string, creditFee: number) {
   }
 }
 
-// Get user by email function
+// Função para obter usuário por e-mail
 export async function getUserByEmail(email: string) {
   try {
     await connectToDatabase();

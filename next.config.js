@@ -4,8 +4,17 @@ const CopyPlugin = require("copy-webpack-plugin");
 const nextConfig = {
   experimental: {
     serverActions: {
-      bodySizeLimit: '2mb', 
+      bodySizeLimit: '2mb',
     },
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '/**',
+      },
+    ],
   },
   webpack(config, { isServer }) {
     config.plugins.push(

@@ -137,9 +137,11 @@ const SignUp: React.FC = () => {
     router.push("/auth-page/signin"); // Redirecionar para a página de Sign In quando o popup for fechado
   };
 
-  const handleGoogleSignIn = () => {
-    signIn("google"); // Chamada para login com Google via next-auth
+  const handleGoogleSignIn = async () => {
+    const result = await signIn("google", { callbackUrl: "/" });
+    // Não precisa de redirecionamento manual aqui, pois o callbackUrl faz isso automaticamente
   };
+  
 
   return (
     <DefaultLayout>

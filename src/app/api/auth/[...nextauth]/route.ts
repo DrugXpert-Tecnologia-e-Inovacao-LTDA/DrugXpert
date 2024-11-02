@@ -1,17 +1,17 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google"; // Import Google provider
-import { loginUser, createOrUpdateUserWithGoogle } from "@/lib/actions/user.actions"; // Import your user actions
+import GoogleProvider from "next-auth/providers/google";
+import { loginUser, createOrUpdateUserWithGoogle } from "@/lib/actions/user.actions";
 
 const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      async profile(profile) {
-        // Map Google profile to your user schema
+      profile(profile) {
+        // Mapear o campo 'sub' como 'id' para compatibilidade com NextAuth
         return {
-          id: profile.id,
+          id: profile.sub,
           email: profile.email,
           name: profile.name,
           picture: profile.picture,
@@ -33,37 +33,37 @@ const authOptions: AuthOptions = {
             return user;
           }
         }
-        return null; // Return null if user is not found
+        return null;
       },
     }),
   ],
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24 hours
+    maxAge: 24 * 60 * 60, // 24 horas
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id; // Attach user ID to the token
+        token.id = user.id; // Adiciona o ID do usuário ao token
       }
       return token;
     },
     async session({ session, token }: any) {
       if (token) {
-        session.id = token.id; // Attach token ID to the session
+        session.id = token.id; // Adiciona o ID do token à sessão
       }
       return session;
     },
     async signIn({ user, account }) {
       if (account?.provider === "google") {
-        // If the user is signing in with Google, create or update the user
+        // Cria ou atualiza o usuário ao fazer login com Google
         const googleUser = await createOrUpdateUserWithGoogle(user);
         if (googleUser) {
-          return true; // Allow sign-in
+          return true;
         }
-        return false; // Deny sign-in if user creation fails
+        return false;
       }
-      return true; // Allow sign-in for other providers
+      return true;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
@@ -71,5 +71,7 @@ const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions);
 
-export const GET = handler;
-export const POST = handler;
+export { handler as GET, handler as POST };
+
+
+
