@@ -1,4 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+// src/app/api/molecules/route.ts
+import { NextResponse } from 'next/server';
 
 // Simulação do banco de dados
 const moleculeBank = [
@@ -35,13 +36,7 @@ const moleculeBank = [
   // Adicione o restante das moléculas conforme necessário
 ];
 
-// Função para lidar com requisições GET para /api/molecules
-const handler = (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === 'GET') {
-    res.status(200).json(moleculeBank); // Retorna o banco de moléculas
-  } else {
-    res.status(405).json({ message: 'Method Not Allowed' }); // Caso o método não seja GET
-  }
-};
-
-export default handler;
+// Função GET para /api/molecules
+export async function GET() {
+  return NextResponse.json(moleculeBank, { status: 200 });
+}
