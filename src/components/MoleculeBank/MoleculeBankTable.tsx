@@ -2,273 +2,43 @@
 import React, { useState, useEffect } from "react";
 import MoleculeStructure from "../MoleculeStructure/index";
 
-const moleculeBank = [
-  {
-    moleculeName: "Aspirin",
-    smilesStructure: "CC(=O)OC1=CC=CC=C1C(O)=O",
-    molecularWeight: 180.16,
-    categoryUsage: "Pain reliever/NSAID",
-  },
-  {
-    moleculeName: "Caffeine",
-    smilesStructure: "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
-    molecularWeight: 194.19,
-    categoryUsage: "Stimulant",
-  },
-  {
-    moleculeName: "Benzene",
-    smilesStructure: "C1=CC=CC=C1",
-    molecularWeight: 78.11,
-    categoryUsage: "Industrial solvent",
-  },
-  {
-    moleculeName: "Glucose",
-    smilesStructure: "C(C1C(C(C(C(O1)O)O)O)O)O",
-    molecularWeight: 180.16,
-    categoryUsage: "Energy source/sugar",
-  },
-  {
-    moleculeName: "Penicillin",
-    smilesStructure: "CC1(C2C(C(C(O2)N1C(=O)COC(=O)C)C)S)C=O",
-    molecularWeight: 334.39,
-    categoryUsage: "Antibiotic",
-  },
-  {
-    moleculeName: "Ibuprofen",
-    smilesStructure: "CC(C)CC1=CC=C(C=C1)C(C)C(=O)O",
-    molecularWeight: 206.28,
-    categoryUsage: "Pain reliever/NSAID",
-  },
-  {
-    moleculeName: "Acetaminophen",
-    smilesStructure: "CC(=O)NC1=CC=C(O)C=C1",
-    molecularWeight: 151.16,
-    categoryUsage: "Pain reliever/Antipyretic",
-  },
-  {
-    moleculeName: "Morphine",
-    smilesStructure: "CN1CCC23C4C1CC(C2C3O)OC5=CC=CC=C45",
-    molecularWeight: 285.34,
-    categoryUsage: "Pain reliever/Opiate",
-  },
-  {
-    moleculeName: "Nicotine",
-    smilesStructure: "CN1CCCC1C2=CN=CC=C2",
-    molecularWeight: 162.23,
-    categoryUsage: "Stimulant",
-  },
-  {
-    moleculeName: "Ethanol",
-    smilesStructure: "CCO",
-    molecularWeight: 46.07,
-    categoryUsage: "Alcohol/Disinfectant",
-  },
-  {
-    moleculeName: "Cholesterol",
-    smilesStructure: "CC(C)C(C)C(C)C(C)C(C)C(C)C(C)C(C)(C)C(C)C(C)C(C)C",
-    molecularWeight: 386.65,
-    categoryUsage: "Biomolecule",
-  },
-  {
-    moleculeName: "Vitamin C",
-    smilesStructure: "C(C1C(C(C(C(O1)O)O)O)O)O",
-    molecularWeight: 176.12,
-    categoryUsage: "Nutrient/Antioxidant",
-  },
-  {
-    moleculeName: "Ketamine",
-    smilesStructure: "CC(C1=CC2=C(C=C1)C(=O)N(C2=O)C(C)C(=O)C)",
-    molecularWeight: 237.73,
-    categoryUsage: "Anesthetic",
-  },
-  {
-    moleculeName: "Lactose",
-    smilesStructure: "C1C(C(C(C(C1O)O)O)O)O",
-    molecularWeight: 342.30,
-    categoryUsage: "Sugar/Disaccharide",
-  },
-  {
-    moleculeName: "Serotonin",
-    smilesStructure: "CC(C1=CC=CC=C1C2=CN=C(N2)C(C)C(C(=O)O)C)",
-    molecularWeight: 176.24,
-    categoryUsage: "Neurotransmitter",
-  },
-  {
-    moleculeName: "Dopamine",
-    smilesStructure: "CC(C1=CC=CC=C1C(C2=CC=CC=C2)N)O",
-    molecularWeight: 153.18,
-    categoryUsage: "Neurotransmitter",
-  },
-  {
-    moleculeName: "Sertraline",
-    smilesStructure: "CC(C1=CC=CC=C1C2=CN=C(N2)C(C)C(C(=O)C)C)",
-    molecularWeight: 306.37,
-    categoryUsage: "Antidepressant",
-  },
-  {
-    moleculeName: "Atorvastatin",
-    smilesStructure: "CC(C1=CC=CC=C1C2=CN=C(C=C2)C(C(=O)O)C(=O)C)",
-    molecularWeight: 558.64,
-    categoryUsage: "Cholesterol-lowering agent",
-  },
-  {
-    moleculeName: "Metformin",
-    smilesStructure: "CN(C)C(=N)C(=O)N(C)C(=O)C",
-    molecularWeight: 129.16,
-    categoryUsage: "Antidiabetic",
-  },
-  {
-    moleculeName: "Folic Acid",
-    smilesStructure: "C(C1=CC2=C(C=C1)C(=O)N(C2=O)C(C)C(=O)C)",
-    molecularWeight: 441.40,
-    categoryUsage: "Vitamin",
-  },
-  {
-    moleculeName: "Warfarin",
-    smilesStructure: "CC(C1=CC=C(C=C1)C(=O)O)C(=O)C",
-    molecularWeight: 308.31,
-    categoryUsage: "Anticoagulant",
-  },
-  {
-    moleculeName: "Simvastatin",
-    smilesStructure: "CC(C1=CC=C(C=C1)C(=O)O)C(C)C(=O)C",
-    molecularWeight: 418.57,
-    categoryUsage: "Cholesterol-lowering agent",
-  },
-  {
-    moleculeName: "Clopidogrel",
-    smilesStructure: "CC(C1=CC=C(C=C1)C(=O)O)C(=O)N(C)C",
-    molecularWeight: 321.85,
-    categoryUsage: "Antiplatelet agent",
-  },
-  {
-    moleculeName: "Levothyroxine",
-    smilesStructure: "C1=CC2=C(C=C1)C(=O)N(C2=O)C(C)C(=O)C",
-    molecularWeight: 654.87,
-    categoryUsage: "Thyroid hormone replacement",
-  },
-  {
-    moleculeName: "Amoxicillin",
-    smilesStructure: "CC(C1=CC=CC=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 365.42,
-    categoryUsage: "Antibiotic",
-  },
-  {
-    moleculeName: "Ranitidine",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 314.38,
-    categoryUsage: "Antihistamine",
-  },
-  {
-    moleculeName: "Propranolol",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 259.34,
-    categoryUsage: "Beta-blocker",
-  },
-  {
-    moleculeName: "Lisinopril",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 405.50,
-    categoryUsage: "Antihypertensive",
-  },
-  {
-    moleculeName: "Alprazolam",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 308.27,
-    categoryUsage: "Anxiolytic",
-  },
-  {
-    moleculeName: "Diazepam",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 284.25,
-    categoryUsage: "Anxiolytic",
-  },
-  {
-    moleculeName: "Citalopram",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 324.40,
-    categoryUsage: "Antidepressant",
-  },
-  {
-    moleculeName: "Tamsulosin",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 408.51,
-    categoryUsage: "Alpha-blocker",
-  },
-  {
-    moleculeName: "Oxycodone",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 315.35,
-    categoryUsage: "Pain reliever/Opiate",
-  },
-  {
-    moleculeName: "Carbamazepine",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 236.27,
-    categoryUsage: "Anticonvulsant",
-  },
-  {
-    moleculeName: "Dexamethasone",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 392.46,
-    categoryUsage: "Corticosteroid",
-  },
-  {
-    moleculeName: "Trazodone",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 371.44,
-    categoryUsage: "Antidepressant",
-  },
-  {
-    moleculeName: "Sildenafil",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 474.61,
-    categoryUsage: "Erectile dysfunction",
-  },
-  {
-    moleculeName: "Clozapine",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 326.37,
-    categoryUsage: "Antipsychotic",
-  },
-  {
-    moleculeName: "Quetiapine",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 383.47,
-    categoryUsage: "Antipsychotic",
-  },
-  {
-    moleculeName: "Ziprasidone",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 412.48,
-    categoryUsage: "Antipsychotic",
-  },
-  {
-    moleculeName: "Risperidone",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 410.48,
-    categoryUsage: "Antipsychotic",
-  },
-  {
-    moleculeName: "Lurasidone",
-    smilesStructure: "C1=CC=C(C=C1)C(=O)N(C)C(C)C(=O)C",
-    molecularWeight: 412.48,
-    categoryUsage: "Antipsychotic",
-  },
-];
-
-
+// Definindo a interface para os dados das moléculas
+interface Molecule {
+  moleculeName: string;
+  smilesStructure: string;
+  molecularWeight: number;
+  categoryUsage: string;
+}
 
 const TableOne = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredMolecules, setFilteredMolecules] = useState(moleculeBank);
+  const [filteredMolecules, setFilteredMolecules] = useState<Molecule[]>([]); // Definindo o tipo de estado
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const filteredData = moleculeBank.filter((molecule) =>
-      molecule.moleculeName.toLowerCase().includes(searchQuery.toLowerCase()),
+    const fetchMolecules = async () => {
+      try {
+        const response = await fetch('/api/molecules'); // Altere para o seu endpoint da API
+        const data: Molecule[] = await response.json(); // Especificando que a resposta é do tipo Molecule[]
+        setFilteredMolecules(data);
+      } catch (error) {
+        console.error("Error fetching molecules:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMolecules();
+  }, []);
+
+  useEffect(() => {
+    const filteredData = filteredMolecules.filter((molecule) =>
+      molecule.moleculeName.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredMolecules(filteredData);
   }, [searchQuery]);
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div className="rounded-lg border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-[#181818] dark:bg-[#181818] sm:px-7.5 xl:pb-1">
