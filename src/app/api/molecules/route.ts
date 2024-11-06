@@ -1,42 +1,48 @@
 // src/app/api/molecules/route.ts
+import mongoose, { Schema, Document } from 'mongoose';
 import { NextResponse } from 'next/server';
+import { connectToDatabase } from '@/lib/database/mongoose'; // Certifique-se de criar esse arquivo
 
-// Simulação do banco de dados
-const moleculeBank = [
-  {
-    moleculeName: "Aspirin",
-    smilesStructure: "CC(=O)OC1=CC=CC=C1C(O)=O",
-    molecularWeight: 180.16,
-    categoryUsage: "Pain reliever/NSAID",
-  },
-  {
-    moleculeName: "Caffeine",
-    smilesStructure: "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
-    molecularWeight: 194.19,
-    categoryUsage: "Stimulant",
-  },
-  {
-    moleculeName: "Benzene",
-    smilesStructure: "C1=CC=CC=C1",
-    molecularWeight: 78.11,
-    categoryUsage: "Industrial solvent",
-  },
-  {
-    moleculeName: "Glucose",
-    smilesStructure: "C(C1C(C(C(C(O1)O)O)O)O)O",
-    molecularWeight: 180.16,
-    categoryUsage: "Energy source/sugar",
-  },
-  {
-    moleculeName: "Penicillin",
-    smilesStructure: "CC1(C2C(C(C(O2)N1C(=O)COC(=O)C)C)S)C=O",
-    molecularWeight: 334.39,
-    categoryUsage: "Antibiotic",
-  },
-  // Adicione o restante das moléculas conforme necessário
-];
+// Definindo o modelo de Molecule no MongoDB
+interface IMolecule extends Document {
+  moleculeName: string;
+  smilesStructure: string;
+  molecularWeight: number;
+  categoryUsage: string;
+}
 
-// Função GET para /api/molecules
+const MoleculeSchema = new Schema<IMolecule>({
+  moleculeName: { type: String, required: true },
+  smilesStructure: { type: String, required: true },
+  molecularWeight: { type: Number, required: true },
+  categoryUsage: { type: String, required: true },
+});
+
+const Molecule = mongoose.models.Molecule || mongoose.model<IMolecule>('Molecule', MoleculeSchema);
+
+// Função para conectar ao MongoDB
+export const connectDb = async () => {
+  await connectToDatabase();
+};
+
+// Função GET para buscar moléculas
 export async function GET() {
-  return NextResponse.json(moleculeBank, { status: 200 });
+  await connectDb();
+  const molecules = await Molecule.find({});
+  return NextResponse.json(molecules, { status: 200 });
+}
+
+// Função POST para adicionar uma nova molécula
+export async function POST(request: Request) {
+  await connectDb();
+
+  const moleculeData = await request.json();
+  const newMolecule = new Molecule(moleculeData);
+
+  try {
+    const savedMolecule = await newMolecule.save();
+    return NextResponse.json(savedMolecule, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to save molecule' }, { status: 500 });
+  }
 }
