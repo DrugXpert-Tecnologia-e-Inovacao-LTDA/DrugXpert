@@ -1,6 +1,6 @@
 // Register.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -8,7 +8,7 @@ export default function Register() {
 
   const register = async (e) => {
     e.preventDefault();
-    await axios.post('https://<your-railway-url>/api/register/', { email, password });
+    await api.post('/register/', { email, password });
     alert('Registrado com sucesso!');
   };
 
