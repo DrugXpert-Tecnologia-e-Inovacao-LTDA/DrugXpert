@@ -1,20 +1,31 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Register from './components/Register';
+import Login from './components/Login';
+import Profile from './components/Profile';
+import EditProfile from './components/EditProfile';
 
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Profile from './pages/Profile';
+const App = () => {
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
-function App() {
+  useEffect(() => {
+    const stored = localStorage.getItem('token');
+    if (stored) setToken(stored);
+  }, []);
+
   return (
     <Router>
+      <nav>
+        <Link to="/profile">Perfil</Link> | <Link to="/edit">Editar</Link> | <Link to="/register">Registrar</Link> | <Link to="/login">Login</Link>
+      </nav>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<Profile token={token} />} />
+        <Route path="/edit" element={<EditProfile token={token} />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/login" element={<Login setToken={setToken} />} />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;

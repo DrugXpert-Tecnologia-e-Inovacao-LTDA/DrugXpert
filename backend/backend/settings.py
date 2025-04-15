@@ -11,9 +11,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import dj_database_url
-import os
-from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u^^@(z7=u2h(4x*ry+81lv=4cj8rtg91^0(^l__k)=axzb0ty('
+SECRET_KEY = 'django-insecure-va-xdnf^3xrkhann+1w5cmwz_sw2we%045y@!*q%2)h3+g4^jm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'users',
+    'rest_framework.authtoken',
+    'djoser',
+    'accounts',
     'corsheaders',
 ]
 
@@ -56,17 +55,25 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:5173",  # Frontend development server
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
 }
 
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+DJOSER = {
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'LOGIN_FIELD': 'email',
+    'USER_ID_FIELD': 'id',
+    'SERIALIZERS': {
+        'user': 'accounts.serializers.UserSerializer',
+        'current_user': 'accounts.serializers.UserSerializer',
+    },
+}
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -92,7 +99,10 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=config('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
