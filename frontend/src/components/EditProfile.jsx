@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { updateUser, getUser } from '../api/auth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../index.css';
 
 const EditProfile = ({ token }) => {
@@ -15,6 +15,8 @@ const EditProfile = ({ token }) => {
   const [error, setError] = useState('');
   const [previewImage, setPreviewImage] = useState('');
   const [initialLoading, setInitialLoading] = useState(true);
+  const [isProfileIncomplete, setIsProfileIncomplete] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Carregar os dados atuais do usuário
@@ -30,6 +32,20 @@ const EditProfile = ({ token }) => {
           if (res.data.profile_picture) {
             setPreviewImage(res.data.profile_picture);
           }
+          
+          // Verificar se o perfil está incompleto de forma mais robusta
+          const hasProfession = res.data.profession && res.data.profession.trim() !== '';
+          const hasLab = res.data.lab && res.data.lab.trim() !== '';
+          setIsProfileIncomplete(!hasProfession || !hasLab);
+          
+          console.log('EditProfile - Profile status:', {
+            profession: res.data.profession,
+            lab: res.data.lab,
+            hasProfession,
+            hasLab,
+            incomplete: !hasProfession || !hasLab
+          });
+          
           setInitialLoading(false);
         })
         .catch(err => {
@@ -60,6 +76,10 @@ const EditProfile = ({ token }) => {
     setError('');
     setSuccess(false);
     
+    // Verificar se os campos necessários estão preenchidos
+    const hasProfession = form.profession && form.profession.trim() !== '';
+    const hasLab = form.lab && form.lab.trim() !== '';
+    
     const formData = new FormData();
     for (const key in form) {
       if (form[key] !== null) {
@@ -71,8 +91,29 @@ const EditProfile = ({ token }) => {
       await updateUser(formData, token);
       setSuccess(true);
       setLoading(false);
+      
+      // Verificar se o perfil agora está completo
+      const isComplete = hasProfession && hasLab;
+      setIsProfileIncomplete(!isComplete);
+      
+      console.log('Profile update result:', {
+        profession: form.profession,
+        lab: form.lab,
+        hasProfession,
+        hasLab,
+        isComplete
+      });
+      
       // Rolar para o topo para mostrar a mensagem de sucesso
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Redirecionar para o perfil após salvar com sucesso, se estiver completo
+      if (isComplete) {
+        console.log('Redirecting to profile page after update');
+        setTimeout(() => {
+          navigate('/profile');
+        }, 1000); // 1 segundo para permitir que o usuário veja a mensagem de sucesso
+      }
     } catch (err) {
       console.error('Update error:', err);
       setError('Erro ao atualizar perfil. Tente novamente mais tarde.');
@@ -91,6 +132,15 @@ const EditProfile = ({ token }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 max-w-md mx-auto">
       <h2 className="text-2xl font-bold text-center mb-6">Editar Perfil</h2>
+      
+      {isProfileIncomplete && (
+        <div className="bg-yellow-50 text-yellow-700 p-4 rounded-lg mb-6 flex items-center">
+          <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+          </svg>
+          Complete seu perfil para ter acesso completo à plataforma.
+        </div>
+      )}
       
       {success && (
         <div className="bg-green-50 text-green-700 p-4 rounded-lg mb-6 flex items-center">

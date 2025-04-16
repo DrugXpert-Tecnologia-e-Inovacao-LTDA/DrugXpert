@@ -1,6 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './index.css';
+import { getUser } from './api/auth'; // Import the getUser function
 
 // Importação com lazy loading para melhor performance
 const Login = lazy(() => import('./components/Login'));
@@ -19,19 +20,54 @@ const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [activeTab, setActiveTab] = useState('login');
   const [isLoading, setIsLoading] = useState(true);
+  const [isProfileComplete, setIsProfileComplete] = useState(null); // Track profile completeness
 
   useEffect(() => {
-    // Verificação do token com um pequeno delay para simular carregamento
     const checkAuth = async () => {
       const stored = localStorage.getItem('token');
-      if (stored) setToken(stored);
-      
-      // Simular um breve carregamento para uma melhor UX
-      setTimeout(() => setIsLoading(false), 800);
+      if (stored) {
+        setToken(stored);
+        try {
+          const user = await getUser(stored);
+          const { profession, lab } = user.data;
+          
+          // Verifica explicitamente se os campos estão preenchidos
+          // Strings vazias ('') serão consideradas valores incompletos
+          const hasProfession = profession && profession.trim() !== '';
+          const hasLab = lab && lab.trim() !== '';
+          
+          // Perfil completo apenas se ambos os campos estiverem preenchidos
+          const profileComplete = hasProfession && hasLab;
+          
+          console.log('App - Profile check:', { 
+            profession,
+            lab,
+            hasProfession,
+            hasLab,
+            complete: profileComplete 
+          });
+          
+          setIsProfileComplete(profileComplete);
+        } catch (err) {
+          console.error('Error fetching user data:', err);
+          // Se não conseguirmos verificar, assumimos que o perfil não está completo
+          setIsProfileComplete(false);
+          
+          // Em erro de autenticação, limpa o token e redireciona para login
+          if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+            console.log('Auth error, clearing token');
+            localStorage.removeItem('token');
+            setToken(null);
+          }
+        }
+      } else {
+        setIsProfileComplete(null); // Não aplicável para usuários não logados
+      }
+      setTimeout(() => setIsLoading(false), 300);
     };
     
     checkAuth();
-  }, []);
+  }, [token]); // Re-executar quando o token mudar
 
   // Função para limpar o token (logout)
   const handleLogout = () => {
@@ -181,10 +217,16 @@ const App = () => {
     <Router>
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
-          <Route path="/" element={token ? <Navigate to="/profile" /> : <LandingPage />} />
+          <Route path="/" element={
+            token ? 
+              <Navigate to={isProfileComplete === true ? "/profile" : "/edit"} /> : 
+              <LandingPage />
+          } />
           <Route path="/profile" element={
             token ? 
-              <Profile token={token} onLogout={handleLogout} /> : 
+              isProfileComplete === true ? 
+                <Profile token={token} onLogout={handleLogout} /> : 
+                <Navigate to="/edit" /> : 
               <Navigate to="/" />
           } />
           <Route path="/edit" element={
@@ -194,12 +236,12 @@ const App = () => {
           } />
           <Route path="/login" element={
             token ? 
-              <Navigate to="/profile" /> : 
+              <Navigate to={isProfileComplete === true ? "/profile" : "/edit"} /> : 
               <Navigate to="/" state={{ activeTab: 'login' }} />
           } />
           <Route path="/register" element={
             token ? 
-              <Navigate to="/profile" /> : 
+              <Navigate to={isProfileComplete === true ? "/profile" : "/edit"} /> : 
               <Navigate to="/" state={{ activeTab: 'register' }} />
           } />
           <Route path="*" element={<Navigate to="/" />} />

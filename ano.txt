@@ -1,5 +1,2 @@
-#5b8c30
-#588931
-#48783b
-#356546
-#245451
+Faça com que ao usuario fizer o login e suas informçoes ainda nao estiverem completas ele seja redirecionado para EditProfile.jsx e 
+caso estejam completas seja redirecionado para o profile 

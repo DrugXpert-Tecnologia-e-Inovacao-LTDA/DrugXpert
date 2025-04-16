@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { loginUser } from '../api/auth';
+import { loginUser, getUser } from '../api/auth';
+import { useNavigate } from 'react-router-dom';
 import '../index.css';
 
 const Login = ({ setToken }) => {
   const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,19 +16,57 @@ const Login = ({ setToken }) => {
     
     try {
       const res = await loginUser(form);
-      console.log('Login response:', res); // Debug para verificar a resposta
       
       if (res.data && res.data.auth_token) {
+        const token = res.data.auth_token;
+        
         // Primeiro define no localStorage
-        localStorage.setItem('token', res.data.auth_token);
+        localStorage.setItem('token', token);
         // Depois atualiza o estado
-        setToken(res.data.auth_token);
-        console.log('Token set:', res.data.auth_token); // Debug para confirmar o token
+        setToken(token);
+        
+        // Verificar completude do perfil
+        try {
+          const userData = await getUser(token);
+          const { profession, lab } = userData.data;
+          
+          // Verifica explicitamente se os campos estão preenchidos
+          // Strings vazias ('') serão consideradas valores incompletos
+          const hasProfession = profession && profession.trim() !== '';
+          const hasLab = lab && lab.trim() !== '';
+          
+          // Perfil completo apenas se ambos os campos estiverem preenchidos
+          const profileComplete = hasProfession && hasLab;
+          
+          console.log('Login - Profile check:', { 
+            profession,
+            lab,
+            hasProfession,
+            hasLab,
+            complete: profileComplete 
+          });
+          
+          // Redirecionar com base na completude do perfil
+          setTimeout(() => {
+            if (profileComplete) {
+              console.log('Redirecting to profile page');
+              navigate('/profile');
+            } else {
+              console.log('Redirecting to edit profile page');
+              navigate('/edit');
+            }
+          }, 100); // Pequeno delay para garantir que o estado foi atualizado
+          
+        } catch (profileErr) {
+          console.error('Error checking profile:', profileErr);
+          // Se não conseguir verificar o perfil, direciona para edição
+          navigate('/edit');
+        }
       } else {
         throw new Error('Token não recebido');
       }
     } catch (err) {
-      console.error('Login error:', err); // Debug do erro
+      console.error('Login error:', err);
       setError('Credenciais inválidas. Por favor, tente novamente.');
     } finally {
       setLoading(false);
