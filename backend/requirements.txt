@@ -1,20 +1,8 @@
-# Core Django
 Django>=4.2,<5.0
-
-# PostgreSQL
 psycopg2-binary>=2.9
-
-# Variáveis de ambiente
 python-decouple>=3.8
-
-# Configuração de banco por URL
 dj-database-url>=1.0
-
-# WSGI para produção
 gunicorn>=20.1
-
-# CORS (para o frontend se comunicar)
 django-cors-headers>=4.0
-
-# Pillow para manipular imagens (ex: foto de perfil)
 Pillow>=10.0
+djangorestframework>=3.14
