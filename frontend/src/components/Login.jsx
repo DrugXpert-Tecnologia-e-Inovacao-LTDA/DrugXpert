@@ -17,13 +17,12 @@ const Login = ({ onLogin }) => {
     try {
       const loginResponse = await loginUser(credentials);
       const token = loginResponse.data.auth_token;
-      
+
       const userResponse = await getUser(token);
       const user = userResponse.data;
-      
-      onLogin(token);
-      
-      // Simplificar a lógica de redirecionamento
+
+      onLogin(token); // Ensure this is called with the token
+
       const isProfileComplete = !!(user.profession && user.lab);
       if (!isProfileComplete) {
         navigate('/edit');

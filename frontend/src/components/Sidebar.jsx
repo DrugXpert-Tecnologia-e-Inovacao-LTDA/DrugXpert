@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSyringe, FaPills, FaUser, FaSignOutAlt } from 'react-icons/fa';
 
-const Sidebar = () => {
+const Sidebar = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const handleProfileClick = (e) => {
@@ -43,13 +43,13 @@ const Sidebar = () => {
         </li>
       </ul>
       <div className="mt-auto pt-8">
-        <Link 
-          to="/logout" 
+        <button 
+          onClick={onLogout}
           className="flex items-center justify-center px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-all shadow-md hover:shadow-lg"
         >
           <FaSignOutAlt className="mr-3" />
           Sair
-        </Link>
+        </button>
       </div>
     </div>
   );

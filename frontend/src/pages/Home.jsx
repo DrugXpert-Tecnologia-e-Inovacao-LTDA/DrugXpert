@@ -2,13 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 
-const Home = () => {
+const Home = ({ onLogout }) => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-900 flex">
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar onLogout={onLogout} />
       {/* Main Content */}
       <div className="w-3/4 p-8 bg-gray-100">
         <h1 className="text-4xl font-bold text-gray-800 mb-6">Bem-vindo ao Dashboard</h1>

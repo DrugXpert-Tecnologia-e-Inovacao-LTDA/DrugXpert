@@ -23,6 +23,11 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isProfileComplete, setIsProfileComplete] = useState(null); // Track profile completeness
 
+  const handleLogin = (newToken) => {
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
       const stored = localStorage.getItem('token');
@@ -185,7 +190,7 @@ const App = () => {
               <Suspense fallback={<div className="flex justify-center p-8"><div className="animate-spin h-8 w-8 border-4 border-green-500 border-t-transparent rounded-full"></div></div>}>
                 {activeTab === 'login' ? (
                   <div className="animate-fade-in">
-                    <Login setToken={setToken} />
+                    <Login onLogin={handleLogin} /> {/* Pass handleLogin as onLogin */}
                   </div>
                 ) : (
                   <div className="animate-fade-in">
@@ -235,7 +240,7 @@ const App = () => {
           } />
           <Route path="/home" element={
             token ? 
-              <Home /> : 
+              <Home onLogout={handleLogout} /> : 
               <Navigate to="/" />
           } />
           <Route path="/login" element={
