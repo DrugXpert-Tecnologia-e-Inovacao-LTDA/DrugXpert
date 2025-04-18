@@ -1,2 +1,0 @@
-Faça com que ao usuario fizer o login e suas informçoes ainda nao estiverem completas ele seja redirecionado para EditProfile.jsx e 
-caso estejam completas seja redirecionado para o profile 

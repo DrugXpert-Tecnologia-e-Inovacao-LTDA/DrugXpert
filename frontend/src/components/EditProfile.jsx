@@ -76,10 +76,6 @@ const EditProfile = ({ token }) => {
     setError('');
     setSuccess(false);
     
-    // Verificar se os campos necessários estão preenchidos
-    const hasProfession = form.profession && form.profession.trim() !== '';
-    const hasLab = form.lab && form.lab.trim() !== '';
-    
     const formData = new FormData();
     for (const key in form) {
       if (form[key] !== null) {
@@ -90,33 +86,28 @@ const EditProfile = ({ token }) => {
     try {
       await updateUser(formData, token);
       setSuccess(true);
-      setLoading(false);
       
-      // Verificar se o perfil agora está completo
-      const isComplete = hasProfession && hasLab;
-      setIsProfileIncomplete(!isComplete);
-      
-      console.log('Profile update result:', {
-        profession: form.profession,
-        lab: form.lab,
-        hasProfession,
-        hasLab,
-        isComplete
-      });
-      
-      // Rolar para o topo para mostrar a mensagem de sucesso
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      
-      // Redirecionar para o perfil após salvar com sucesso, se estiver completo
-      if (isComplete) {
-        console.log('Redirecting to profile page after update');
-        setTimeout(() => {
+      // Atualizar o status do perfil
+      const isComplete = !!(form.profession && form.lab);
+      localStorage.setItem('profileStatus', JSON.stringify({
+        isComplete: isComplete,
+        lastCheck: new Date().toISOString()
+      }));
+
+      // Redirecionar após sucesso
+      setTimeout(() => {
+        const previousPath = localStorage.getItem('previousPath');
+        if (previousPath === '/profile') {
           navigate('/profile');
-        }, 1000); // 1 segundo para permitir que o usuário veja a mensagem de sucesso
-      }
+        } else {
+          navigate('/home');
+        }
+      }, 1500);
+      
     } catch (err) {
       console.error('Update error:', err);
       setError('Erro ao atualizar perfil. Tente novamente mais tarde.');
+    } finally {
       setLoading(false);
     }
   };
@@ -196,6 +187,15 @@ const EditProfile = ({ token }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 Voltar para Perfil
+              </Link>
+              <Link 
+                to="/home" 
+                className="mt-4 px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-lg transition-all flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h11M9 21V3m0 0L3 10m6-7l6 7" />
+                </svg>
+                Ir para Dashboard
               </Link>
             </div>
           </div>

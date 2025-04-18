@@ -14,3 +14,11 @@ export const updateUser = (data, token) =>
   API.patch('/auth/users/me/', data, {
     headers: { Authorization: `Token ${token}` },
   });
+
+export const isProfileComplete = (user) => {
+  return user &&
+    user.profession &&
+    user.profession.trim() !== '' &&
+    user.lab &&
+    user.lab.trim() !== '';
+};

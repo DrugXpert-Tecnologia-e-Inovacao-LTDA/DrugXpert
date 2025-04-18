@@ -2,6 +2,7 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './index.css';
 import { getUser } from './api/auth'; // Import the getUser function
+import Home from './pages/Home'; // Import the Home component
 
 // Importação com lazy loading para melhor performance
 const Login = lazy(() => import('./components/Login'));
@@ -219,14 +220,12 @@ const App = () => {
         <Routes>
           <Route path="/" element={
             token ? 
-              <Navigate to={isProfileComplete === true ? "/profile" : "/edit"} /> : 
+              (isProfileComplete === false ? <Navigate to="/edit" /> : <Navigate to="/home" />) : 
               <LandingPage />
           } />
           <Route path="/profile" element={
             token ? 
-              isProfileComplete === true ? 
-                <Profile token={token} onLogout={handleLogout} /> : 
-                <Navigate to="/edit" /> : 
+              <Profile token={token} onLogout={handleLogout} /> : 
               <Navigate to="/" />
           } />
           <Route path="/edit" element={
@@ -234,14 +233,19 @@ const App = () => {
               <EditProfile token={token} /> : 
               <Navigate to="/" />
           } />
+          <Route path="/home" element={
+            token ? 
+              <Home /> : 
+              <Navigate to="/" />
+          } />
           <Route path="/login" element={
             token ? 
-              <Navigate to={isProfileComplete === true ? "/profile" : "/edit"} /> : 
+              <Navigate to="/home" /> : 
               <Navigate to="/" state={{ activeTab: 'login' }} />
           } />
           <Route path="/register" element={
             token ? 
-              <Navigate to={isProfileComplete === true ? "/profile" : "/edit"} /> : 
+              <Navigate to="/home" /> : 
               <Navigate to="/" state={{ activeTab: 'register' }} />
           } />
           <Route path="*" element={<Navigate to="/" />} />

@@ -1,73 +1,38 @@
 import React, { useState } from 'react';
-import { loginUser, getUser } from '../api/auth';
 import { useNavigate } from 'react-router-dom';
+import { loginUser, getUser } from '../api/auth';
 import '../index.css';
 
-const Login = ({ setToken }) => {
-  const [form, setForm] = useState({ email: '', password: '' });
+const Login = ({ onLogin }) => {
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
-    
+    setError('');
+
     try {
-      const res = await loginUser(form);
+      const loginResponse = await loginUser(credentials);
+      const token = loginResponse.data.auth_token;
       
-      if (res.data && res.data.auth_token) {
-        const token = res.data.auth_token;
-        
-        // Primeiro define no localStorage
-        localStorage.setItem('token', token);
-        // Depois atualiza o estado
-        setToken(token);
-        
-        // Verificar completude do perfil
-        try {
-          const userData = await getUser(token);
-          const { profession, lab } = userData.data;
-          
-          // Verifica explicitamente se os campos estão preenchidos
-          // Strings vazias ('') serão consideradas valores incompletos
-          const hasProfession = profession && profession.trim() !== '';
-          const hasLab = lab && lab.trim() !== '';
-          
-          // Perfil completo apenas se ambos os campos estiverem preenchidos
-          const profileComplete = hasProfession && hasLab;
-          
-          console.log('Login - Profile check:', { 
-            profession,
-            lab,
-            hasProfession,
-            hasLab,
-            complete: profileComplete 
-          });
-          
-          // Redirecionar com base na completude do perfil
-          setTimeout(() => {
-            if (profileComplete) {
-              console.log('Redirecting to profile page');
-              navigate('/profile');
-            } else {
-              console.log('Redirecting to edit profile page');
-              navigate('/edit');
-            }
-          }, 100); // Pequeno delay para garantir que o estado foi atualizado
-          
-        } catch (profileErr) {
-          console.error('Error checking profile:', profileErr);
-          // Se não conseguir verificar o perfil, direciona para edição
-          navigate('/edit');
-        }
+      const userResponse = await getUser(token);
+      const user = userResponse.data;
+      
+      onLogin(token);
+      
+      // Simplificar a lógica de redirecionamento
+      const isProfileComplete = !!(user.profession && user.lab);
+      if (!isProfileComplete) {
+        navigate('/edit');
       } else {
-        throw new Error('Token não recebido');
+        navigate('/home');
       }
     } catch (err) {
+      setError('Falha no login. Verifique suas credenciais.');
       console.error('Login error:', err);
-      setError('Credenciais inválidas. Por favor, tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -91,7 +56,7 @@ const Login = ({ setToken }) => {
           required
           placeholder="seu@email.com" 
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-          onChange={(e) => setForm({ ...form, email: e.target.value })} 
+          onChange={(e) => setCredentials({ ...credentials, email: e.target.value })} 
         />
       </div>
       
@@ -105,7 +70,7 @@ const Login = ({ setToken }) => {
           required
           placeholder="Sua senha" 
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-          onChange={(e) => setForm({ ...form, password: e.target.value })} 
+          onChange={(e) => setCredentials({ ...credentials, password: e.target.value })} 
         />
       </div>
       

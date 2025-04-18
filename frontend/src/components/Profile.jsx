@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getUser } from '../api/auth';
+import { Link } from 'react-router-dom';
 import '../index.css';
 
 // Assuming you have this function in your API, if not you'll need to create it
@@ -36,7 +37,12 @@ const Profile = ({ token, onLogout }) => {
             is_student: res.data.is_student || false
           });
           
-          // Automatically enter edit mode for missing fields
+          const isProfileComplete = !!(res.data.profession && res.data.lab);
+          localStorage.setItem('profileStatus', JSON.stringify({
+            isComplete: isProfileComplete,
+            lastCheck: new Date().toISOString()
+          }));
+          
           setEditMode({
             profession: !res.data.profession,
             lab: !res.data.lab,
@@ -156,6 +162,15 @@ const Profile = ({ token, onLogout }) => {
                 </svg>
                 Sair
               </button>
+              <Link 
+                to="/home"
+                className="mt-4 w-full px-4 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-lg transition-all flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h11M9 21V3m0 0L3 10m6-7l6 7" />
+                </svg>
+                Ir para Dashboard
+              </Link>
             </div>
           </div>
           
