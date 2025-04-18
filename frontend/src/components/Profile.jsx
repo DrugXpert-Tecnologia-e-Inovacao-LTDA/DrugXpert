@@ -132,9 +132,9 @@ const Profile = ({ token, onLogout }) => {
         <div className="md:flex relative z-10">
           {/* Left column - Header with user info */}
           <div className="md:w-1/3 bg-gradient-to-br from-green-500 to-green-700 p-8 text-white flex flex-col items-center justify-center">
-            {user.profile_picture ? (
+            {user.profile_picture_url ? (
               <img 
-                src={user.profile_picture} 
+                src={`http://127.0.0.1:8000${user.profile_picture_url}`} 
                 alt="Perfil" 
                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg transform transition-transform hover:scale-105"
               />

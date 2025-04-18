@@ -11,5 +11,10 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
+    def profile_picture_url(self):
+        if self.profile_picture:
+            return self.profile_picture.url
+        return None
+
     def __str__(self):
         return self.email

@@ -29,8 +29,8 @@ const EditProfile = ({ token }) => {
             is_student: res.data.is_student || false,
             profile_picture: null // Não podemos definir o arquivo aqui
           });
-          if (res.data.profile_picture) {
-            setPreviewImage(res.data.profile_picture);
+          if (res.data.profile_picture_url) {
+            setPreviewImage(res.data.profile_picture_url);
           }
           
           // Verificar se o perfil está incompleto de forma mais robusta
