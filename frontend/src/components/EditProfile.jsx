@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { updateUser, getUser } from '../api/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import '../index.css';
+import LoadingScreen from './LoadingScreen';
 
 const EditProfile = ({ token }) => {
+  const [pageLoading, setPageLoading] = useState(true);
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -19,6 +21,12 @@ const EditProfile = ({ token }) => {
   const [initialLoading, setInitialLoading] = useState(true);
   const [isProfileIncomplete, setIsProfileIncomplete] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setPageLoading(false);
+    }, 1500);
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -120,12 +128,8 @@ const EditProfile = ({ token }) => {
     }
   };
 
-  if (initialLoading) {
-    return (
-      <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-green-600 to-green-900">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-200 border-opacity-50"></div>
-      </div>
-    );
+  if (pageLoading || initialLoading) {
+    return <LoadingScreen />;
   }
 
   return (

@@ -26,9 +26,9 @@ const VaccineSection = () => {
   ];
 
   return (
-    <div className="bg-gray-50 rounded-lg overflow-hidden h-full">
+    <div className="bg-gray-50 rounded-lg overflow-hidden h-full animate-fade-in delay-700">
       <div className="p-6">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 animate-fade-in delay-700">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Centro de Pesquisas sobre Vacinas
           </h2>
@@ -37,7 +37,7 @@ const VaccineSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in delay-700">
           {features.map((feature, index) => (
             <div key={index} className="bg-white p-4 rounded-lg shadow hover:shadow-xl transition-all duration-300">
               <div className="mb-3">
@@ -53,7 +53,7 @@ const VaccineSection = () => {
           ))}
         </div>
 
-        <div className="mt-8 bg-green-50 rounded-xl p-4">
+        <div className="mt-8 bg-green-50 rounded-xl p-4 animate-fade-in delay-700">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="p-2">
               <div className="text-2xl font-bold text-green-600">150+</div>

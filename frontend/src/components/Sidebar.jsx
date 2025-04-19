@@ -23,6 +23,10 @@ const Sidebar = ({ onLogout, onSidebarStateChange }) => {
     e.preventDefault();
     navigate('/profile');
   };
+  const handleEditProfileClick = (e) => {
+    e.preventDefault();
+    navigate('/edit');
+  };
 
   return (
     <div 
@@ -91,7 +95,7 @@ const Sidebar = ({ onLogout, onSidebarStateChange }) => {
         </li>
         <li>
           <button 
-            onClick={handleProfileClick}
+            onClick={handleEditProfileClick}
             className={`w-full flex items-center px-4 py-3 bg-white/20 hover:bg-white text-white hover:text-green-500 rounded-lg transition-all shadow-md hover:shadow-lg ${isOpen ? '' : 'justify-center'}`}
           >
             <IoMdSettings size={20} />

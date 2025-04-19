@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, getUser } from '../api/auth';
+import LoadingScreen from './LoadingScreen';
 import '../index.css';
 
 const Login = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [pageLoading, setPageLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -17,6 +19,9 @@ const Login = ({ onLogin }) => {
     try {
       const loginResponse = await loginUser(credentials);
       const token = loginResponse.data.auth_token;
+
+      setPageLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       const userResponse = await getUser(token);
       const user = userResponse.data;
@@ -37,8 +42,12 @@ const Login = ({ onLogin }) => {
     }
   };
 
+  if (pageLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className={`space-y-4 ${!loading ? 'animate-fade-in' : ''}`}>
       {error && (
         <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg">
           {error}

@@ -27,14 +27,14 @@ const NavBar = ({ userName = "Usuário" }) => {
   };
 
   return (
-    <nav className="bg-white shadow-lg p-4 mb-6 rounded-lg flex items-center justify-between">
+    <nav className="bg-white shadow-lg p-4 mb-6 rounded-lg flex items-center justify-between animate-fade-in delay-700">
       <div className="flex items-center">
         <h1 className="text-4xl font-bold text-gray-800 mb-6">
           Bem-vindo ao Dashboard, {userName}!
         </h1>
       </div>
       
-      <div className="w-1/3 ml-auto mr-4"> {/* Modificado: removido mx-8 e adicionado ml-auto mr-4 */}
+      <div className="w-1/3 ml-auto mr-4 animate-fade-in delay-700"> {/* Modificado: removido mx-8 e adicionado ml-auto mr-4 */}
         <div className="relative">
           <input
             type="text"
@@ -57,7 +57,7 @@ const NavBar = ({ userName = "Usuário" }) => {
         </div>
       </div>
 
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 animate-fade-in delay-700">
         <button className="relative p-2 hover:bg-gray-100 rounded-full">
           <svg
             className="h-6 w-6 text-gray-600"

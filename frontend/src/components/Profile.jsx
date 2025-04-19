@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import LoadingScreen from './LoadingScreen';
 import { getUser, updateUser } from '../api/auth';
 import { Link } from 'react-router-dom';
 import { getDefaultAvatar } from '../utils/avatar';
 import '../index.css';
 
 const Profile = ({ token, onLogout }) => {
+  const [pageLoading, setPageLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -22,6 +24,12 @@ const Profile = ({ token, onLogout }) => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setPageLoading(false);
+    }, 1500);
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -123,11 +131,9 @@ const Profile = ({ token, onLogout }) => {
     });
   };
 
-  if (loading) return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-green-600 to-green-900">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-200 border-opacity-50"></div>
-    </div>
-  );
+  if (pageLoading || loading) {
+    return <LoadingScreen />;
+  }
 
   if (!user) return null;
 

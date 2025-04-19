@@ -57,7 +57,7 @@ const Register = ({ setActiveTab }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className={`space-y-4 ${!loading ? 'animate-fade-in' : ''}`}>
       {error && (
         <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg">
           {error}

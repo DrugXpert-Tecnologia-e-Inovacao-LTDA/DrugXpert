@@ -6,11 +6,19 @@ import Sidebar from '../components/Sidebar';
 import NavBar from '../components/NavBar';
 import VaccineSection from '../components/VaccineSection';
 import MedicineSection from '../components/MedicineSection';
+import LoadingScreen from '../components/LoadingScreen';
 
 const Home = ({ onLogout }) => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setPageLoading(false);
+    }, 1500);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -25,10 +33,14 @@ const Home = ({ onLogout }) => {
     }
   }, []);
 
+  if (pageLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-900 flex">
       <Sidebar onLogout={onLogout} onSidebarStateChange={setIsSidebarOpen} />
-      <div className="flex-grow transition-all duration-300 p-8 bg-gray-100">
+      <div className={`flex-grow transition-all duration-300 p-8 bg-gray-100 ${!pageLoading ? 'animate-fade-in' : ''}`}>
         <NavBar 
           userName={userData?.username || 'Usuário'} 
           userImage={userData?.profile_picture_url ? 

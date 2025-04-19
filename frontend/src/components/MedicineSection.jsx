@@ -26,7 +26,7 @@ const MedicineSection = () => {
   ];
 
   return (
-    <section className="bg-gray-50 to-white rounded-lg overflow-hidden h-full">
+    <section className="bg-gray-50 to-white rounded-lg overflow-hidden h-full animate-fade-in delay-700">
       <div className="p-6">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Centro de Pesquisas Farmacêuticas</h2>
@@ -35,7 +35,7 @@ const MedicineSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in delay-700">
           {features.map((feature, index) => (
             <div key={index} className="bg-white p-4 rounded-lg shadow hover:shadow-xl transition-all duration-300">
               <div className="flex flex-col items-center text-center">
@@ -53,7 +53,7 @@ const MedicineSection = () => {
           ))}
         </div>
 
-        <div className="mt-8 text-center">
+        <div className="mt-8 text-center animate-fade-in delay-700">
           <button className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition-colors duration-300 font-semibold text-sm">
             Explorar Medicamentos
           </button>
