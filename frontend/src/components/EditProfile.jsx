@@ -21,7 +21,6 @@ const EditProfile = ({ token }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Carregar os dados atuais do usuário
     if (token) {
       getUser(token)
         .then(res => {
@@ -31,13 +30,12 @@ const EditProfile = ({ token }) => {
             profession: res.data.profession || '',
             lab: res.data.lab || '',
             is_student: res.data.is_student || false,
-            profile_picture: null // Não podemos definir o arquivo aqui
+            profile_picture: null
           });
           if (res.data.profile_picture_url) {
             setPreviewImage(res.data.profile_picture_url);
           }
           
-          // Verificar se o perfil está incompleto de forma mais robusta
           const hasProfession = res.data.profession && res.data.profession.trim() !== '';
           const hasLab = res.data.lab && res.data.lab.trim() !== '';
           setIsProfileIncomplete(!hasProfession || !hasLab);
@@ -65,7 +63,6 @@ const EditProfile = ({ token }) => {
     if (file) {
       setForm({ ...form, profile_picture: file });
       
-      // Criar preview da imagem
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result);
@@ -80,7 +77,6 @@ const EditProfile = ({ token }) => {
     setError('');
     setSuccess(false);
 
-    // Validar campos obrigatórios
     if (!form.username || !form.email || !form.profession || !form.lab) {
       setError('Por favor, preencha todos os campos obrigatórios');
       setLoading(false);
@@ -89,7 +85,6 @@ const EditProfile = ({ token }) => {
 
     const formData = new FormData();
     
-    // Adicionar apenas campos com valores válidos
     Object.entries(form).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
         if (key === 'is_student') {
@@ -108,13 +103,11 @@ const EditProfile = ({ token }) => {
       await updateUser(formData, token, false);
       setSuccess(true);
       
-      // Atualizar o status do perfil
       localStorage.setItem('profileStatus', JSON.stringify({
         isComplete: true,
         lastCheck: new Date().toISOString()
       }));
 
-      // Redirecionar após sucesso
       setTimeout(() => {
         navigate('/profile');
       }, 1500);
@@ -136,18 +129,10 @@ const EditProfile = ({ token }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-900 p-4 flex items-center justify-center">
-      <div className="max-w-4xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in relative">
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-          <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-green-500 opacity-5"></div>
-          <div className="absolute bottom-10 right-10 w-48 h-48 rounded-full bg-green-500 opacity-5"></div>
-          <div className="absolute top-1/3 right-1/4 w-24 h-24 rounded-full bg-green-500 opacity-5"></div>
-        </div>
-        
+    <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-900 p-2 flex items-center justify-center">
+      <div className="max-w-7xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in relative">
         <div className="md:flex relative z-10">
-          {/* Left column - Header with form guidance */}
-          <div className="md:w-1/3 bg-gradient-to-br from-green-500 to-green-700 p-8 text-white flex flex-col">
+          <div className="md:w-1/3 bg-gradient-to-br from-green-500 to-green-700 p-4 text-white flex flex-col">
             <div className="mb-8">
               <div className="inline-flex items-center justify-center p-3 rounded-full bg-white/20 mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -215,9 +200,8 @@ const EditProfile = ({ token }) => {
             </div>
           </div>
           
-          {/* Right column - Edit form */}
-          <div className="md:w-2/3 p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Editar Perfil</h2>
+          <div className="md:w-2/3 p-6 max-w-3xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Editar Perfil</h2>
             
             {success && (
               <div className="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-lg mb-6 animate-fade-in flex items-center">
@@ -237,9 +221,9 @@ const EditProfile = ({ token }) => {
               </div>
             )}
             
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl mx-auto">
 
-            <div className="mb-8 flex flex-col items-center">
+              <div className="mb-4 flex flex-col items-center">
                 {previewImage ? (
                   <div className="relative inline-block group transition-transform transform hover:scale-105">
                     <img 
@@ -289,7 +273,7 @@ const EditProfile = ({ token }) => {
                 </div>
               </div>
 
-              <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-inner mb-6">
+              <div className="space-y-4 bg-gray-50 p-4 rounded-lg shadow-inner mb-4">
                 <div>
                   <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
                     Nome de usuário <span className="text-red-500">*</span>
@@ -298,7 +282,7 @@ const EditProfile = ({ token }) => {
                     id="username"
                     type="text" 
                     placeholder="Seu nome de usuário" 
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                    className="w-full px-6 py-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
                     value={form.username}
                     onChange={e => setForm({ ...form, username: e.target.value })} 
                   />
@@ -312,14 +296,14 @@ const EditProfile = ({ token }) => {
                     id="email"
                     type="email" 
                     placeholder="seu.email@exemplo.com" 
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                    className="w-full px-6 py-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
                     value={form.email}
                     onChange={e => setForm({ ...form, email: e.target.value })} 
                   />
                 </div>
               </div>
               
-              <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-inner">
+              <div className="space-y-4 bg-gray-50 p-4 rounded-lg shadow-inner">
                 <div>
                   <label htmlFor="profession" className="block text-sm font-medium text-gray-700 mb-1">
                     Profissão <span className="text-red-500">*</span>
@@ -328,7 +312,7 @@ const EditProfile = ({ token }) => {
                     id="profession"
                     type="text" 
                     placeholder="Ex: Farmacêutico, Pesquisador, Professor..." 
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                    className="w-full px-6 py-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
                     value={form.profession}
                     onChange={e => setForm({ ...form, profession: e.target.value })} 
                   />
@@ -345,7 +329,7 @@ const EditProfile = ({ token }) => {
                     id="lab"
                     type="text" 
                     placeholder="Nome do laboratório ou instituição onde trabalha" 
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                    className="w-full px-6 py-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
                     value={form.lab}
                     onChange={e => setForm({ ...form, lab: e.target.value })} 
                   />
@@ -371,7 +355,7 @@ const EditProfile = ({ token }) => {
                 </div>
               </div>
               
-              <div className="pt-6 flex flex-col sm:flex-row gap-4">
+              <div className="pt-4 flex flex-col sm:flex-row gap-3">
                 <Link 
                   to="/profile" 
                   className="sm:w-1/2 py-3 px-4 border border-gray-300 rounded-lg text-gray-700 text-center hover:bg-gray-50 transition-colors flex items-center justify-center"
@@ -405,7 +389,7 @@ const EditProfile = ({ token }) => {
               </div>
             </form>
             
-            <div className="text-center text-xs text-gray-500 mt-8">
+            <div className="text-center text-xs text-gray-500 mt-4">
               <p>Mantenha seus dados atualizados para ter uma melhor experiência na plataforma.</p>
             </div>
           </div>
