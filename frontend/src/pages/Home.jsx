@@ -7,6 +7,7 @@ import NavBar from '../components/NavBar';
 import VaccineSection from '../components/VaccineSection';
 import MedicineSection from '../components/MedicineSection';
 import LoadingScreen from '../components/LoadingScreen';
+import WorldMap from '../components/WorldMap';
 
 const Home = ({ onLogout }) => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ const Home = ({ onLogout }) => {
           <VaccineSection />
           <MedicineSection />
         </div>
+        <WorldMap />
       </div>
     </div>
   );
