@@ -5,6 +5,8 @@ import '../index.css';
 
 const EditProfile = ({ token }) => {
   const [form, setForm] = useState({
+    username: '',
+    email: '',
     profession: '',
     lab: '',
     is_student: false,
@@ -24,6 +26,8 @@ const EditProfile = ({ token }) => {
       getUser(token)
         .then(res => {
           setForm({
+            username: res.data.username || '',
+            email: res.data.email || '',
             profession: res.data.profession || '',
             lab: res.data.lab || '',
             is_student: res.data.is_student || false,
@@ -75,38 +79,49 @@ const EditProfile = ({ token }) => {
     setLoading(true);
     setError('');
     setSuccess(false);
-    
-    const formData = new FormData();
-    for (const key in form) {
-      if (form[key] !== null) {
-        formData.append(key, form[key]);
-      }
+
+    // Validar campos obrigatórios
+    if (!form.username || !form.email || !form.profession || !form.lab) {
+      setError('Por favor, preencha todos os campos obrigatórios');
+      setLoading(false);
+      return;
     }
 
+    const formData = new FormData();
+    
+    // Adicionar apenas campos com valores válidos
+    Object.entries(form).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        if (key === 'is_student') {
+          formData.append(key, value.toString());
+        } else if (key === 'profile_picture' && value instanceof File) {
+          formData.append(key, value);
+        } else if (typeof value === 'string') {
+          formData.append(key, value.trim());
+        } else {
+          formData.append(key, value);
+        }
+      }
+    });
+
     try {
-      await updateUser(formData, token);
+      await updateUser(formData, token, false);
       setSuccess(true);
       
       // Atualizar o status do perfil
-      const isComplete = !!(form.profession && form.lab);
       localStorage.setItem('profileStatus', JSON.stringify({
-        isComplete: isComplete,
+        isComplete: true,
         lastCheck: new Date().toISOString()
       }));
 
       // Redirecionar após sucesso
       setTimeout(() => {
-        const previousPath = localStorage.getItem('previousPath');
-        if (previousPath === '/profile') {
-          navigate('/profile');
-        } else {
-          navigate('/home');
-        }
+        navigate('/profile');
       }, 1500);
       
     } catch (err) {
       console.error('Update error:', err);
-      setError('Erro ao atualizar perfil. Tente novamente mais tarde.');
+      setError(err.message || 'Erro ao atualizar perfil. Tente novamente mais tarde.');
     } finally {
       setLoading(false);
     }
@@ -223,7 +238,8 @@ const EditProfile = ({ token }) => {
             )}
             
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="mb-8 flex flex-col items-center">
+
+            <div className="mb-8 flex flex-col items-center">
                 {previewImage ? (
                   <div className="relative inline-block group transition-transform transform hover:scale-105">
                     <img 
@@ -270,6 +286,36 @@ const EditProfile = ({ token }) => {
                     </svg>
                     {previewImage ? 'Alterar imagem' : 'Adicionar foto'}
                   </label>
+                </div>
+              </div>
+
+              <div className="space-y-6 bg-gray-50 p-6 rounded-lg shadow-inner mb-6">
+                <div>
+                  <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                    Nome de usuário <span className="text-red-500">*</span>
+                  </label>
+                  <input 
+                    id="username"
+                    type="text" 
+                    placeholder="Seu nome de usuário" 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                    value={form.username}
+                    onChange={e => setForm({ ...form, username: e.target.value })} 
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    E-mail <span className="text-red-500">*</span>
+                  </label>
+                  <input 
+                    id="email"
+                    type="email" 
+                    placeholder="seu.email@exemplo.com" 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                    value={form.email}
+                    onChange={e => setForm({ ...form, email: e.target.value })} 
+                  />
                 </div>
               </div>
               

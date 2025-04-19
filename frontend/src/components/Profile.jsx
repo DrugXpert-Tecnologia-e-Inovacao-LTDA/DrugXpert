@@ -1,27 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { getUser } from '../api/auth';
+import { getUser, updateUser } from '../api/auth';
 import { Link } from 'react-router-dom';
+import { getDefaultAvatar } from '../utils/avatar';
 import '../index.css';
-
-// Assuming you have this function in your API, if not you'll need to create it
-const updateUserProfile = async (token, userData) => {
-  // Replace with your actual API call
-  return fetch('/api/users/profile', {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify(userData)
-  }).then(res => res.json());
-};
 
 const Profile = ({ token, onLogout }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [editMode, setEditMode] = useState({});
-  const [formData, setFormData] = useState({});
+  const [editMode, setEditMode] = useState({
+    username: false,
+    profession: false,
+    lab: false,
+    is_student: false
+  });
+  const [formData, setFormData] = useState({
+    username: '',
+    profession: '',
+    lab: '',
+    is_student: false
+  });
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -32,6 +30,7 @@ const Profile = ({ token, onLogout }) => {
         .then(res => {
           setUser(res.data);
           setFormData({
+            username: res.data.username || '',
             profession: res.data.profession || '',
             lab: res.data.lab || '',
             is_student: res.data.is_student || false
@@ -44,9 +43,10 @@ const Profile = ({ token, onLogout }) => {
           }));
           
           setEditMode({
+            username: false,
             profession: !res.data.profession,
             lab: !res.data.lab,
-            is_student: false // Always show as toggle since it's boolean
+            is_student: false
           });
           
           setLoading(false);
@@ -68,20 +68,51 @@ const Profile = ({ token, onLogout }) => {
   };
 
   const handleSaveChanges = async () => {
-    if (Object.keys(editMode).some(key => editMode[key])) {
-      setIsSaving(true);
-      try {
-        const updatedData = await updateUserProfile(token, formData);
-        setUser({ ...user, ...formData });
-        setEditMode({});
-        setSaveSuccess(true);
-        setTimeout(() => setSaveSuccess(false), 3000);
-      } catch (err) {
-        console.error('Error updating profile:', err);
-        setError('Não foi possível atualizar o perfil');
-      } finally {
-        setIsSaving(false);
+    if (!Object.keys(editMode).some(key => editMode[key])) return;
+    
+    setIsSaving(true);
+    setError('');
+    
+    try {
+      const changedData = {};
+      Object.keys(editMode).forEach(key => {
+        if (editMode[key] && formData[key] !== user[key]) {
+          if (typeof formData[key] === 'string') {
+            const trimmedValue = formData[key].trim();
+            if (trimmedValue !== '') {
+              changedData[key] = trimmedValue;
+            }
+          } else {
+            changedData[key] = formData[key];
+          }
+        }
+      });
+
+      if (Object.keys(changedData).length === 0) {
+        setError('Nenhuma alteração foi feita');
+        return;
       }
+
+      const response = await updateUser(changedData, token);
+      setUser(prevUser => ({ ...prevUser, ...response.data }));
+      setEditMode({
+        username: false,
+        profession: false,
+        lab: false,
+        is_student: false
+      });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+      
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      const errorMessage = err.response?.data?.username?.[0] || 
+                          err.response?.data?.detail || 
+                          err.message || 
+                          'Não foi possível atualizar o perfil';
+      setError(errorMessage);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -98,29 +129,6 @@ const Profile = ({ token, onLogout }) => {
     </div>
   );
 
-  if (error) return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-green-600 to-green-900 p-4">
-      <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md animate-fade-in">
-        <div className="text-red-600 flex items-center mb-4">
-          <svg className="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <h3 className="text-xl font-bold">Erro</h3>
-        </div>
-        <p className="text-gray-700 mb-6">{error}</p>
-        <button 
-          onClick={onLogout}
-          className="w-full px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all shadow-md flex items-center justify-center"
-        >
-          <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-          Sair e tentar novamente
-        </button>
-      </div>
-    </div>
-  );
-
   if (!user) return null;
 
   const isAnyFieldInEditMode = Object.values(editMode).some(value => value);
@@ -128,7 +136,6 @@ const Profile = ({ token, onLogout }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-900 p-4 flex items-center justify-center">
       <div className="max-w-4xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in relative">
-        {/* Decorative elements */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
           <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-green-500 opacity-5"></div>
           <div className="absolute bottom-10 right-10 w-48 h-48 rounded-full bg-green-500 opacity-5"></div>
@@ -136,13 +143,16 @@ const Profile = ({ token, onLogout }) => {
         </div>
         
         <div className="md:flex relative z-10">
-          {/* Left column - Header with user info */}
           <div className="md:w-1/3 bg-gradient-to-br from-green-500 to-green-700 p-8 text-white flex flex-col items-center justify-center">
             {user.profile_picture_url ? (
               <img 
                 src={`http://127.0.0.1:8000${user.profile_picture_url}`} 
-                alt="Perfil" 
+                alt="Perfil"
                 className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg transform transition-transform hover:scale-105"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = getDefaultAvatar(user.username);
+                }}
               />
             ) : (
               <div className="w-32 h-32 rounded-full bg-white flex items-center justify-center text-green-600 text-3xl font-bold shadow-lg transform transition-transform hover:scale-105">
@@ -174,7 +184,6 @@ const Profile = ({ token, onLogout }) => {
             </div>
           </div>
           
-          {/* Right column - User details */}
           <div className="md:w-2/3 p-8">
             <div className="mb-8">
               <div className="flex justify-between items-center mb-6 pb-2 border-b border-gray-200">
@@ -192,6 +201,42 @@ const Profile = ({ token, onLogout }) => {
               </div>
               
               <div className="space-y-6">
+                <div className="flex flex-col md:flex-row md:items-center">
+                  <span className="text-gray-600 md:w-32 font-medium">Username:</span>
+                  {editMode.username ? (
+                    <div className="flex-1">
+                      <div className="flex items-center">
+                        <input
+                          type="text"
+                          name="username"
+                          value={formData.username}
+                          onChange={handleInputChange}
+                          placeholder="Digite seu nome de usuário"
+                          className={`border ${error ? 'border-red-500' : 'border-gray-300'} rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent w-full max-w-xs`}
+                        />
+                        <button 
+                          className="ml-2 text-green-600"
+                          onClick={() => toggleEditMode('username')}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      {error && (
+                        <p className="mt-1 text-sm text-red-500">{error}</p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex items-center">
+                      <span className="text-gray-900 font-semibold">
+                        {user.username || formData.username}
+                      </span>
+                      
+                    </div>
+                  )}
+                </div>
+
                 <div className="flex flex-col md:flex-row md:items-center">
                   <span className="text-gray-600 md:w-32 font-medium">Email:</span>
                   <span className="text-gray-900 font-semibold">{user.email}</span>
@@ -323,8 +368,8 @@ const Profile = ({ token, onLogout }) => {
                 href="/edit" 
                 className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all shadow-md flex items-center justify-center"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                 </svg>
                 Editar Perfil Completo
               </a>
