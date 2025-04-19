@@ -13,7 +13,7 @@ const Sidebar = ({ onLogout, onSidebarStateChange }) => {
     setIsOpen(true);
     onSidebarStateChange?.(true);
   };
-  
+
   const handleMouseLeave = () => {
     setIsOpen(false);
     onSidebarStateChange?.(false);
@@ -23,6 +23,7 @@ const Sidebar = ({ onLogout, onSidebarStateChange }) => {
     e.preventDefault();
     navigate('/profile');
   };
+
   const handleEditProfileClick = (e) => {
     e.preventDefault();
     navigate('/edit');
@@ -30,12 +31,12 @@ const Sidebar = ({ onLogout, onSidebarStateChange }) => {
 
   return (
     <div 
-      className={`transition-all duration-300 ${isOpen ? 'w-64' : 'w-20'} bg-gradient-to-br from-green-500 to-green-700 p-4 text-white flex flex-col shadow-lg`}
+      className={`fixed top-0 left-0 h-full z-50 transition-all duration-300 ${isOpen ? 'w-64' : 'w-20'} bg-gradient-to-br from-green-500 to-green-700 p-4 text-white flex flex-col shadow-lg`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <h2 className={`text-3xl font-bold mb-6 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 w-0 h-0'}`}>
-        Dashboard
+        Menu
       </h2>
       <ul className="space-y-4">
         <li>

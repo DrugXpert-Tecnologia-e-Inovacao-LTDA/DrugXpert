@@ -41,7 +41,10 @@ const Home = ({ onLogout }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-900 flex">
       <Sidebar onLogout={onLogout} onSidebarStateChange={setIsSidebarOpen} />
-      <div className={`flex-grow transition-all duration-300 p-8 bg-gray-100 ${!pageLoading ? 'animate-fade-in' : ''}`}>
+      <div 
+        className={`flex-grow transition-all duration-300 p-8 bg-gray-100 ${!pageLoading ? 'animate-fade-in' : ''}`} 
+        style={{ marginLeft: isSidebarOpen ? '16rem' : '5rem' }} // Ajuste dinâmico
+      >
         <NavBar 
           userName={userData?.username || 'Usuário'} 
           userImage={userData?.profile_picture_url ? 
