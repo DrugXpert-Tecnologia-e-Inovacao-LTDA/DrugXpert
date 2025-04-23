@@ -245,7 +245,229 @@ const hierarchicalData = [
       }
     ]
   },
-  // ...existing countries (Japan, South Africa, India)
+  {
+    id: "in",
+    name: "Índia",
+    level: "country",
+    coordinates: [20.5937, 78.9629],
+    diseaseCount: 300,
+    medicineCount: 250,
+    vaccineTrials: 60,
+    type: "research",
+    stats: {
+      activeClinicalTrials: 900,
+      researchInvestment: "50B",
+      topDiseases: ["Tuberculose", "COVID-19", "Malária", "Diabetes"],
+      researchTeams: 1500,
+      patentsPending: 300,
+      collaboratingInstitutions: 120,
+      yearlyPublications: 4000
+    },
+    regions: [
+      {
+        id: "in-mh",
+        name: "Maharashtra",
+        level: "state",
+        coordinates: [19.7515, 75.7139],
+        diseaseCount: 120,
+        medicineCount: 100,
+        vaccineTrials: 25,
+        type: "research",
+        stats: {
+          activeClinicalTrials: 400,
+          researchInvestment: "20B",
+          topDiseases: ["Tuberculose", "COVID-19", "Diabetes"],
+          researchTeams: 600,
+          patentsPending: 100,
+          collaboratingInstitutions: 50,
+          yearlyPublications: 1500
+        },
+        cities: [
+          {
+            id: "in-mh-mumbai",
+            name: "Mumbai",
+            level: "city",
+            coordinates: [19.076, 72.8777],
+            diseaseCount: 80,
+            medicineCount: 70,
+            vaccineTrials: 15,
+            type: "research",
+            stats: {
+              activeClinicalTrials: 250,
+              researchInvestment: "10B",
+              topDiseases: ["Tuberculose", "COVID-19"],
+              researchTeams: 400,
+              patentsPending: 60,
+              collaboratingInstitutions: 30,
+              yearlyPublications: 1000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "de",
+    name: "Alemanha",
+    level: "country",
+    coordinates: [51.1657, 10.4515],
+    diseaseCount: 200,
+    medicineCount: 180,
+    vaccineTrials: 50,
+    type: "production",
+    stats: {
+      activeClinicalTrials: 700,
+      researchInvestment: "80B",
+      topDiseases: ["Câncer", "Doenças Cardíacas", "Diabetes"],
+      researchTeams: 1200,
+      patentsPending: 250,
+      collaboratingInstitutions: 100,
+      yearlyPublications: 3000
+    },
+    regions: [
+      {
+        id: "de-by",
+        name: "Baviera",
+        level: "state",
+        coordinates: [48.7904, 11.4979],
+        diseaseCount: 90,
+        medicineCount: 85,
+        vaccineTrials: 20,
+        type: "production",
+        stats: {
+          activeClinicalTrials: 300,
+          researchInvestment: "30B",
+          topDiseases: ["Câncer", "Diabetes"],
+          researchTeams: 500,
+          patentsPending: 80,
+          collaboratingInstitutions: 40,
+          yearlyPublications: 1200
+        },
+        cities: [
+          {
+            id: "de-by-munich",
+            name: "Munique",
+            level: "city",
+            coordinates: [48.1351, 11.582],
+            diseaseCount: 60,
+            medicineCount: 55,
+            vaccineTrials: 10,
+            type: "production",
+            stats: {
+              activeClinicalTrials: 200,
+              researchInvestment: "15B",
+              topDiseases: ["Câncer", "Diabetes"],
+              researchTeams: 300,
+              patentsPending: 50,
+              collaboratingInstitutions: 20,
+              yearlyPublications: 800
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "il",
+    name: "Israel",
+    level: "country",
+    coordinates: [31.0461, 34.8516],
+    diseaseCount: 150,
+    medicineCount: 130,
+    vaccineTrials: 40,
+    type: "research",
+    stats: {
+      activeClinicalTrials: 500,
+      researchInvestment: "25B",
+      topDiseases: ["Câncer", "Diabetes", "Doenças Autoimunes"],
+      researchTeams: 800,
+      patentsPending: 200,
+      collaboratingInstitutions: 70,
+      yearlyPublications: 2500
+    },
+    regions: [
+      {
+        id: "il-tlv",
+        name: "Tel Aviv",
+        level: "state",
+        coordinates: [32.0853, 34.7818],
+        diseaseCount: 80,
+        medicineCount: 70,
+        vaccineTrials: 20,
+        type: "research",
+        stats: {
+          activeClinicalTrials: 250,
+          researchInvestment: "12B",
+          topDiseases: ["Câncer", "Doenças Cardíacas"],
+          researchTeams: 400,
+          patentsPending: 100,
+          collaboratingInstitutions: 30,
+          yearlyPublications: 1200
+        },
+        cities: [
+          {
+            id: "il-tlv-telaviv",
+            name: "Tel Aviv",
+            level: "city",
+            coordinates: [32.0853, 34.7818],
+            diseaseCount: 50,
+            medicineCount: 45,
+            vaccineTrials: 10,
+            type: "research",
+            stats: {
+              activeClinicalTrials: 150,
+              researchInvestment: "6B",
+              topDiseases: ["Câncer", "Diabetes"],
+              researchTeams: 200,
+              patentsPending: 50,
+              collaboratingInstitutions: 15,
+              yearlyPublications: 600
+            }
+          }
+        ]
+      },
+      {
+        id: "il-jlm",
+        name: "Jerusalém",
+        level: "state",
+        coordinates: [31.7683, 35.2137],
+        diseaseCount: 70,
+        medicineCount: 60,
+        vaccineTrials: 15,
+        type: "research",
+        stats: {
+          activeClinicalTrials: 200,
+          researchInvestment: "10B",
+          topDiseases: ["Doenças Autoimunes", "Câncer"],
+          researchTeams: 300,
+          patentsPending: 80,
+          collaboratingInstitutions: 25,
+          yearlyPublications: 900
+        },
+        cities: [
+          {
+            id: "il-jlm-jerusalem",
+            name: "Jerusalém",
+            level: "city",
+            coordinates: [31.7683, 35.2137],
+            diseaseCount: 40,
+            medicineCount: 35,
+            vaccineTrials: 8,
+            type: "research",
+            stats: {
+              activeClinicalTrials: 100,
+              researchInvestment: "5B",
+              topDiseases: ["Doenças Autoimunes", "Câncer"],
+              researchTeams: 150,
+              patentsPending: 40,
+              collaboratingInstitutions: 10,
+              yearlyPublications: 450
+            }
+          }
+        ]
+      }
+    ]
+  }
 ];
 
 // Função para extrair todos os níveis (país, estado, cidade) em uma estrutura plana
@@ -290,7 +512,10 @@ const mockData = [...extractAllLocations(hierarchicalData)];
 const typeColors = {
   research: "#4CAF50",    // Verde
   production: "#2196F3",  // Azul
-  distribution: "#9C27B0" // Roxo
+  distribution: "#9C27B0", // Roxo
+  // Adicione cores para os novos países
+  in: "#FF9800",          // Laranja para Índia
+  de: "#FFC107"           // Amarelo para Alemanha
 };
 
 const typeLabels = {
@@ -478,14 +703,14 @@ function DraggableMarker({ data, viewMode, focusOnParent }) {
   // Função para determinar o tamanho do ícone baseado na contagem de medicamentos e nível
   const getMarkerIcon = () => {
     // Ajustar tamanho baseado no nível (país maior, cidade menor)
-    let sizeMultiplier = 1;
-    if (level === "country") sizeMultiplier = 1.2;
-    else if (level === "state") sizeMultiplier = 0.9;
-    else if (level === "city") sizeMultiplier = 0.7;
-    
-    const size = Math.max(20, Math.min(50, (medicineCount / 200) * 40 + 20)) * sizeMultiplier;
-    
-    // Definir estilo baseado no nível
+    let sizeMultiplier = 0.8; // Reduzido de 1 para 0.8
+    if (level === "country") sizeMultiplier = 1.0; // Reduzido de 1.2 para 1.0
+    else if (level === "state") sizeMultiplier = 0.7; // Reduzido de 0.9 para 0.7
+    else if (level === "city") sizeMultiplier = 0.5; // Reduzido de 0.7 para 0.5
+
+    const size = Math.max(15, Math.min(40, (medicineCount / 200) * 30 + 15)) * sizeMultiplier;
+    // Reduzido o tamanho mínimo de 20 para 15 e o máximo de 50 para 40
+
     let strokeWidth = 1;
     let strokeDasharray = "";
     if (level === "state") strokeDasharray = "2";
@@ -662,6 +887,8 @@ const WorldMap = () => {
   const [viewMode, setViewMode] = useState("standard"); // standard ou heatmap
   const [heatmapIntensity, setHeatmapIntensity] = useState(1);
   const [selectedLevel, setSelectedLevel] = useState("all"); // all, country, state, city
+  const [currentPage, setCurrentPage] = useState(1); // Página atual
+  const itemsPerPage = 10; // Itens por página
   const mapRef = useRef(null);
 
   // Filtragem por tipo
@@ -685,7 +912,20 @@ const WorldMap = () => {
         (item.grandparentName && item.grandparentName.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     : levelFilteredData;
-    
+
+  // Paginação
+  const totalPages = Math.ceil(searchFilteredData.length / itemsPerPage);
+  const paginatedData = searchFilteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
   // Função para exportar dados
   const exportData = () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(searchFilteredData));
@@ -908,7 +1148,7 @@ const WorldMap = () => {
               </tr>
             </thead>
             <tbody>
-              {searchFilteredData.map((item) => {
+              {paginatedData.map((item) => {
                 const { id, name, level, type, diseaseCount, medicineCount, coordinates, parentName } = item;
                 return (
                   <tr key={id} className="odd:bg-white even:bg-gray-100">
@@ -939,6 +1179,27 @@ const WorldMap = () => {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Paginação */}
+        <div className="flex justify-between items-center mt-4">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 rounded ${currentPage === 1 ? "bg-gray-300" : "bg-blue-500 text-white"}`}
+          >
+            Anterior
+          </button>
+          <span className="text-sm">
+            Página {currentPage} de {totalPages}
+          </span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1 rounded ${currentPage === totalPages ? "bg-gray-300" : "bg-blue-500 text-white"}`}
+          >
+            Próxima
+          </button>
         </div>
         
         {/* Painel de estatísticas globais */}
