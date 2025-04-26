@@ -607,7 +607,7 @@ const getHeatmapColor = (value) => {
 // Atualizar o componente de legenda para mostrar os níveis hierárquicos
 const MapLegend = ({ viewMode }) => {
   return (
-    <div className="bg-white p-3 rounded-lg shadow-md absolute bottom-5 left-5 z-[1000] max-w-xs">
+    <div className="bg-white p-3 rounded-lg shadow-md absolute bottom-5 left-5 z-[1000] max-w-xs animate-fade-in">
       <h4 className="font-bold text-sm mb-2">Legenda</h4>
       
       {viewMode === "standard" ? (

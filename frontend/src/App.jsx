@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import './index.css';
 import { getUser } from './api/auth'; // Import the getUser function
 import Home from './pages/Home'; // Import the Home component
+import Vaccines from './pages/Vaccines'; // Import the Vaccines component
 
 // Importação com lazy loading para melhor performance
 const Login = lazy(() => import('./components/Login'));
@@ -253,6 +254,7 @@ const App = () => {
               <Navigate to="/home" /> : 
               <Navigate to="/" state={{ activeTab: 'register' }} />
           } />
+          <Route path="/vaccines" element={<Vaccines />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Suspense>
