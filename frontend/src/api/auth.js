@@ -1,17 +1,22 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://127.0.0.1:8000', // Certifique-se de que esta URL está correta
+  baseURL: import.meta.env.VITE_API_URL, // Ex: https://app.drugxpert.net/api
 });
 
-// Add response interceptor
+// Melhor tratamento de erro
 API.interceptors.response.use(
   response => response,
   error => {
-    const customError = new Error(
-      error.response?.data?.detail || 
-      'Ocorreu um erro ao processar sua solicitação'
-    );
+    const message =
+      error.response?.data?.detail ||
+      error.response?.data?.non_field_errors?.[0] ||
+      Object.entries(error.response?.data || {})
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(', ') ||
+      'Ocorreu um erro ao processar sua solicitação';
+
+    const customError = new Error(message);
     customError.response = error.response;
     return Promise.reject(customError);
   }
@@ -23,6 +28,7 @@ export const getUser = (token) =>
   API.get('/auth/users/me/', {
     headers: { Authorization: `Token ${token}` },
   });
+
 export const updateUser = async (data, token, isBasicUpdate = false) => {
   if (!data) {
     throw new Error('Dados inválidos para atualização');
@@ -30,14 +36,12 @@ export const updateUser = async (data, token, isBasicUpdate = false) => {
 
   let cleanData;
   if (data instanceof FormData) {
-    // Se for FormData, verificar se tem algum valor
     const hasValues = Array.from(data.entries()).length > 0;
     if (!hasValues) {
       throw new Error('Nenhum dado válido para atualização');
     }
     cleanData = data;
   } else {
-    // Se for objeto normal, limpar valores vazios
     cleanData = Object.entries(data).reduce((acc, [key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
         acc[key] = typeof value === 'string' ? value.trim() : value;
@@ -56,10 +60,7 @@ export const updateUser = async (data, token, isBasicUpdate = false) => {
   }
 
   try {
-    const headers = { 
-      Authorization: `Token ${token}`
-    };
-
+    const headers = { Authorization: `Token ${token}` };
     if (!(data instanceof FormData)) {
       headers['Content-Type'] = 'application/json';
     }
@@ -67,23 +68,19 @@ export const updateUser = async (data, token, isBasicUpdate = false) => {
     const response = await API.patch('/auth/users/me/', cleanData, { headers });
     return response;
   } catch (error) {
-    const message = error.response?.data?.detail || 
-                   error.response?.data?.message || 
-                   Object.entries(error.response?.data || {})
-                     .map(([key, value]) => `${key}: ${value}`)
-                     .join(', ') ||
-                   'Ocorreu um erro ao atualizar o perfil';
-    
+    const message =
+      error.response?.data?.detail ||
+      error.response?.data?.message ||
+      Object.entries(error.response?.data || {})
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(', ') ||
+      'Ocorreu um erro ao atualizar o perfil';
+
     const customError = new Error(message);
     customError.response = error.response;
     throw customError;
   }
 };
 
-export const isProfileComplete = (user) => {
-  return user &&
-    user.profession &&
-    user.profession.trim() !== '' &&
-    user.lab &&
-    user.lab.trim() !== '';
-};
+export const isProfileComplete = (user) =>
+  user && user.profession?.trim() && user.lab?.trim();

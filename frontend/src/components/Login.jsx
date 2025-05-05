@@ -35,7 +35,7 @@ const Login = ({ onLogin }) => {
         navigate('/home');
       }
     } catch (err) {
-      setError('Falha no login. Verifique suas credenciais.');
+      setError(err.message || 'Falha no login. Verifique suas credenciais.');
       console.error('Login error:', err);
     } finally {
       setLoading(false);
