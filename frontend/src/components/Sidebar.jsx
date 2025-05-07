@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSyringe, FaPills, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaSyringe, FaPills, FaUser, FaSignOutAlt, FaHome } from 'react-icons/fa';
 import { SiMoleculer } from "react-icons/si";
 import { PiAtomBold } from "react-icons/pi";
 import { IoMdSettings } from "react-icons/io";
@@ -35,10 +35,25 @@ const Sidebar = ({ onLogout, onSidebarStateChange }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <h2 className={`text-3xl font-bold mb-6 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 w-0 h-0'}`}>
-        Menu
-      </h2>
+      <div className="mb-6 flex justify-center">
+        <img 
+          src="/logo.png" 
+          alt="Logo" 
+          className={`transition-all duration-300 ${isOpen ? 'w-12 h-12' : 'w-8 h-8'}`}
+        />
+      </div>
       <ul className="space-y-4">
+        <li>
+          <Link 
+            to="/home" 
+            className={`flex items-center px-4 py-3 bg-white/20 hover:bg-white text-white hover:text-green-500 rounded-lg transition-all shadow-md hover:shadow-lg ${isOpen ? '' : 'justify-center'}`}
+          >
+            <FaHome size={20} />
+            <span className={`transition-all duration-300 ${isOpen ? 'ml-3 opacity-100' : 'w-0 opacity-0 hidden'}`}>
+              Home
+            </span>
+          </Link>
+        </li>
         <li>
           <Link 
             to="/vaccines" 

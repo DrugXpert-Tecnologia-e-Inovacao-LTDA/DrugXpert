@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import NavBar from '../components/NavBar';
 import LoadingScreen from '../components/LoadingScreen'; // Import LoadingScreen
+import { getDefaultAvatar } from '../utils/avatar'; // Import getDefaultAvatar
+import { getUser } from '../api/auth'; // Import getUser
 
 const Vaccine = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -12,11 +14,15 @@ const Vaccine = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Simulating user data fetch
-      setTimeout(() => {
-        setUserData({ username: 'Usuário' });
-        setIsLoading(false); // Stop loading after data is fetched
-      }, 1000); // Simulate network delay
+      getUser(token) // Fetch user data
+        .then(response => {
+          setUserData(response.data); // Set user data
+          setIsLoading(false); // Stop loading after data is fetched
+        })
+        .catch(error => {
+          console.error('Erro ao buscar dados do usuário:', error);
+          setIsLoading(false); // Stop loading on error
+        });
     } else {
       setIsLoading(false); // Stop loading if no token
     }
@@ -129,7 +135,14 @@ const Vaccine = () => {
         className={`flex-grow transition-all duration-300 p-8 bg-gray-100`} 
         style={{ marginLeft: isSidebarOpen ? '16rem' : '5rem' }}
       >
-        <NavBar userName={userData?.username || 'Usuário'} />
+        <NavBar 
+          userName={userData?.username || 'Usuário'}
+          pageTitle="Vaccines" 
+          userImage={userData?.profile_picture_url ? 
+            `http://127.0.0.1:8000${userData.profile_picture_url}` : 
+            getDefaultAvatar(userData?.username)
+          } // Added userImage prop
+        />
         <main className="p-6 bg-gray-50 min-h-screen">
           <header className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Pesquisa e Desenvolvimento de Vacinas</h1>

@@ -17,8 +17,9 @@ ALLOWED_HOSTS = [
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
-    "https://app.drugxpert.net",
-    "http://localhost:3000",
+    "http://localhost:3000",  # Default React port
+    "http://localhost:5173",  # Default Vite port
+    "http://localhost:8000",  # Ensure backend allows its own origin
 ]
 
 # Application definition
