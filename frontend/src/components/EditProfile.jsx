@@ -134,16 +134,16 @@ const EditProfile = ({ token }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-900 p-2 flex items-center justify-center">
-      <div className="max-w-7xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in relative">
+      <div className="max-w-4xl w-full bg-white rounded-xl shadow-xl overflow-hidden animate-fade-in relative md:max-w-3xl lg:max-w-4xl"> {/* Adjusted max width for responsiveness */}
         <div className="md:flex relative z-10">
-          <div className="md:w-1/3 bg-gradient-to-br from-green-500 to-green-700 p-4 text-white flex flex-col">
-            <div className="mb-8">
-              <div className="inline-flex items-center justify-center p-3 rounded-full bg-white/20 mb-6">
+          <div className="md:w-1/3 bg-gradient-to-br from-green-500 to-green-700 p-3 text-white flex flex-col"> {/* Reduced padding */}
+            <div className="mb-6"> {/* Reduced margin-bottom */}
+              <div className="inline-flex items-center justify-center p-3 rounded-full bg-white/20 mb-4"> {/* Reduced margin-bottom */}
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h2 className="text-3xl font-bold mb-3">Seu Perfil</h2>
+              <h2 className="text-3xl font-bold mb-2">Seu Perfil</h2> {/* Reduced margin-bottom */}
               <p className="text-white/80">Complete suas informações para ter acesso completo à plataforma DrugXpert.</p>
             </div>
             
@@ -204,8 +204,8 @@ const EditProfile = ({ token }) => {
             </div>
           </div>
           
-          <div className="md:w-2/3 p-6 max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Editar Perfil</h2>
+          <div className="md:w-2/3 p-4 max-w-xl mx-auto"> {/* Adjusted padding and max width */}
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">Editar Perfil</h2> {/* Reduced margin-bottom */}
             
             {success && (
               <div className="bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded-lg mb-6 animate-fade-in flex items-center">

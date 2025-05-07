@@ -4,6 +4,9 @@ import './index.css';
 import { getUser } from './api/auth'; // Import the getUser function
 import Home from './pages/Home'; // Import the Home component
 import Vaccines from './pages/Vaccines'; // Import the Vaccines component
+import Medicines from './pages/Medicines'
+import Molecules from './pages/Molecules'
+import Smiles from './pages/Smiles'
 
 // Importação com lazy loading para melhor performance
 const Login = lazy(() => import('./components/Login'));
@@ -255,6 +258,9 @@ const App = () => {
               <Navigate to="/" state={{ activeTab: 'register' }} />
           } />
           <Route path="/vaccines" element={<Vaccines />} />
+          <Route path="/medicines" element={<Medicines />} />
+          <Route path="/molecules" element={<Molecules />} />
+          <Route path="/smiles" element={<Smiles />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Suspense>

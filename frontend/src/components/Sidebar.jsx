@@ -77,26 +77,26 @@ const Sidebar = ({ onLogout, onSidebarStateChange }) => {
           </Link>
         </li>
         <li>
-          <button 
-            onClick={handleProfileClick}
-            className={`w-full flex items-center px-4 py-3 bg-white/20 hover:bg-white text-white hover:text-green-500 rounded-lg transition-all shadow-md hover:shadow-lg ${isOpen ? '' : 'justify-center'}`}
+          <Link 
+            to="/molecules" 
+            className={`flex items-center px-4 py-3 bg-white/20 hover:bg-white text-white hover:text-green-500 rounded-lg transition-all shadow-md hover:shadow-lg ${isOpen ? '' : 'justify-center'}`}
           >
-            <PiAtomBold size={20} />
+            <FaPills size={20} />
             <span className={`transition-all duration-300 ${isOpen ? 'ml-3 opacity-100' : 'w-0 opacity-0 hidden'}`}>
               Molecules
             </span>
-          </button>
+          </Link>
         </li>
         <li>
-          <button 
-            onClick={handleProfileClick}
-            className={`w-full flex items-center px-4 py-3 bg-white/20 hover:bg-white text-white hover:text-green-500 rounded-lg transition-all shadow-md hover:shadow-lg ${isOpen ? '' : 'justify-center'}`}
+          <Link 
+            to="/smiles" 
+            className={`flex items-center px-4 py-3 bg-white/20 hover:bg-white text-white hover:text-green-500 rounded-lg transition-all shadow-md hover:shadow-lg ${isOpen ? '' : 'justify-center'}`}
           >
-            <SiMoleculer size={20} />
+            <FaPills size={20} />
             <span className={`transition-all duration-300 ${isOpen ? 'ml-3 opacity-100' : 'w-0 opacity-0 hidden'}`}>
               SMILES
             </span>
-          </button>
+          </Link>
         </li>
         <li>
           <button 
