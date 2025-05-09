@@ -1,354 +1,645 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import NavBar from '../components/NavBar';
-import LoadingScreen from '../components/LoadingScreen'; // Import LoadingScreen
-import { getDefaultAvatar } from '../utils/avatar'; // Import getDefaultAvatar
-import { getUser } from '../api/auth'; // Import getUser
+import LoadingScreen from '../components/LoadingScreen';
+import { getDefaultAvatar } from '../utils/avatar';
+import { getUser } from '../api/auth';
 
 const Medicines = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [medicines, setMedicines] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchCalled, setSearchCalled] = useState(false);
+  const [newMedicine, setNewMedicine] = useState({
+    name: '',
+    disease: '',
+    description: '',
+    manufacturer: '',
+  });
   const [simulationResult, setSimulationResult] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [interactionAnalysis, setInteractionAnalysis] = useState([]);
+  const [interactionCalled, setInteractionCalled] = useState(false);
+  const [simulationStages, setSimulationStages] = useState({
+    computer: null,
+    animal: null,
+    human: null,
+  });
+  const [interactionHistory, setInteractionHistory] = useState([]);
+
+  const medicineSuggestions = ['Paracetamol', 'Ibuprofeno', 'Amoxicilina', 'Aspirina', 'Dipirona'];
+  const numberSuggestions = [10, 20, 50, 100, 200];
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      getUser(token) // Fetch user data
+      getUser(token)
         .then(response => {
-          setUserData(response.data); // Set user data
-          setIsLoading(false); // Stop loading after data is fetched
+          setUserData(response.data);
+          setIsLoading(false);
         })
         .catch(error => {
           console.error('Erro ao buscar dados do usuário:', error);
-          setIsLoading(false); // Stop loading on error
+          setIsLoading(false);
         });
     } else {
-      setIsLoading(false); // Stop loading if no token
+      setIsLoading(false);
     }
   }, []);
 
-  const mockData = {
-    globalStats: {
-      vaccinesDeveloped: 120,
-      countriesInvolved: 80,
-      ongoingTrials: 300,
-    },
-    discoveries: [
-      { year: 1796, vaccine: "Smallpox", discoverer: "Edward Jenner" },
-      { year: 1885, vaccine: "Rabies", discoverer: "Louis Pasteur" },
-      { year: 1955, vaccine: "Polio", discoverer: "Jonas Salk" },
-      { year: 1967, vaccine: "Mumps", discoverer: "Maurice Hilleman" },
-      { year: 1980, vaccine: "Hepatitis B", discoverer: "Baruch Blumberg" },
-    ],
-    mapData: [
-      { country: "USA", vaccinesDeveloped: 40, flag: "us.svg" },
-      { country: "UK", vaccinesDeveloped: 20, flag: "gb-eng.svg" },
-      { country: "India", vaccinesDeveloped: 30, flag: "in.svg" },
-      { country: "Germany", vaccinesDeveloped: 15, flag: "de.svg" },
-      { country: "China", vaccinesDeveloped: 25, flag: "cn.svg" },
-    ],
-    recentDiscoveries: [
-      { lab: "Pfizer", discovery: "Nova vacina contra variantes", year: 2023, flag: "us.svg" },
-      { lab: "Moderna", discovery: "Vacina de RNA mensageiro aprimorada", year: 2022, flag: "us.svg" },
-      { lab: "AstraZeneca", discovery: "Vacina combinada para gripe e COVID-19", year: 2023, flag: "gb-eng.svg" },
-      { lab: "Sinovac", discovery: "Vacina inativada para COVID-19", year: 2021, flag: "cn.svg" },
-      { lab: "Johnson & Johnson", discovery: "Vacina de dose única para COVID-19", year: 2021, flag: "us.svg" },
-    ],
-    universityStudies: [
-      { university: "Harvard", study: "Eficácia de vacinas em idosos", year: 2023, flag: "us.svg" },
-      { university: "Oxford", study: "Vacinas de próxima geração", year: 2022, flag: "gb-eng.svg" },
-      { university: "Stanford", study: "Impacto de vacinas em doenças raras", year: 2023, flag: "us.svg" },
-      { university: "MIT", study: "Vacinas baseadas em nanotecnologia", year: 2023, flag: "us.svg" },
-      { university: "Cambridge", study: "Vacinas para doenças negligenciadas", year: 2022, flag: "gb-eng.svg" },
-    ],
-    vaccineDetails: [
+  useEffect(() => {
+    // Mock de medicamentos e pesquisas pré-pesquisados
+    const initialMedicines = [
       {
-        name: "Vacina BCG",
-        disease: "Tuberculose",
-        createdBy: "Albert Calmette e Camille Guérin",
-        lab: "Instituto Pasteur",
-        country: "França",
-        creationMethod: "Bactéria atenuada",
-        description: "Protege contra formas graves de tuberculose, especialmente em crianças.",
+        name: 'Paracetamol',
+        disease: 'Febre e Dor',
+        description: 'Medicamento utilizado para aliviar dores leves a moderadas e reduzir febre.',
+        manufacturer: 'Farmacêutica XYZ',
+        chemicalProperties: {
+          formula: 'C8H9NO2',
+          molecularWeight: '151.16 g/mol',
+          solubility: 'Solúvel em água',
+          meltingPoint: '169°C',
+        },
       },
       {
-        name: "Vacina contra COVID-19 (Pfizer-BioNTech)",
-        disease: "COVID-19",
-        createdBy: "Pfizer e BioNTech",
-        lab: "Pfizer-BioNTech",
-        country: "EUA e Alemanha",
-        creationMethod: "RNA mensageiro",
-        description: "Previne infecções graves causadas pelo vírus SARS-CoV-2.",
+        name: 'Ibuprofeno',
+        disease: 'Inflamação e Dor',
+        description: 'Anti-inflamatório não esteroidal usado para tratar dor e inflamação.',
+        manufacturer: 'Laboratório ABC',
+        chemicalProperties: {
+          formula: 'C13H18O2',
+          molecularWeight: '206.28 g/mol',
+          solubility: 'Pouco solúvel em água',
+          meltingPoint: '76°C',
+        },
       },
       {
-        name: "Vacina contra Poliomielite",
-        disease: "Poliomielite",
-        createdBy: "Jonas Salk",
-        lab: "Universidade de Pittsburgh",
-        country: "EUA",
-        creationMethod: "Vírus inativado",
-        description: "Previne a poliomielite, uma doença que pode causar paralisia.",
+        name: 'Amoxicilina',
+        disease: 'Infecções Bacterianas',
+        description: 'Antibiótico usado para tratar uma ampla gama de infecções bacterianas.',
+        manufacturer: 'BioPharma Ltda',
+        chemicalProperties: {
+          formula: 'C16H19N3O5S',
+          molecularWeight: '365.4 g/mol',
+          solubility: 'Solúvel em água',
+          meltingPoint: '195°C',
+        },
+      },
+    ];
+
+    const initialResearches = [
+      {
+        title: 'Estudo sobre a eficácia do Paracetamol em crianças',
+        description: 'Pesquisa realizada para avaliar a segurança e eficácia do Paracetamol em crianças com febre.',
+        year: 2022,
+        institution: 'Universidade de Medicina de São Paulo',
       },
       {
-        name: "Vacina contra Sarampo",
-        disease: "Sarampo",
-        createdBy: "John Enders",
-        lab: "Children's Hospital Boston",
-        country: "EUA",
-        creationMethod: "Vírus atenuado",
-        description: "Previne o sarampo, uma doença altamente contagiosa.",
+        title: 'Impacto do Ibuprofeno em pacientes com artrite',
+        description: 'Estudo clínico para analisar os efeitos do Ibuprofeno em pacientes com artrite reumatoide.',
+        year: 2021,
+        institution: 'Instituto Nacional de Saúde',
       },
       {
-        name: "Vacina contra HPV",
-        disease: "Papilomavírus Humano",
-        createdBy: "Ian Frazer",
-        lab: "University of Queensland",
-        country: "Austrália",
-        creationMethod: "Partículas semelhantes ao vírus",
-        description: "Previne infecções por HPV e cânceres associados.",
+        title: 'Desenvolvimento de novas formulações de Amoxicilina',
+        description: 'Pesquisa focada em melhorar a biodisponibilidade da Amoxicilina.',
+        year: 2023,
+        institution: 'Centro de Pesquisa BioTech',
       },
-    ],
+    ];
+
+    setMedicines(initialMedicines);
+    setSearchResults(initialMedicines); // Exibir medicamentos iniciais na pesquisa
+  }, []);
+
+  useEffect(() => {
+    // Mock de interações medicamentosas
+    const interactionMock = [
+      { pair: ['Paracetamol', 'Álcool'], effect: 'Pode causar danos ao fígado', severity: 'Alta', recommendation: 'Evitar o uso combinado.' },
+      { pair: ['Ibuprofeno', 'Aspirina'], effect: 'Aumenta o risco de sangramento', severity: 'Alta', recommendation: 'Consultar um médico antes de usar ambos.' },
+      { pair: ['Amoxicilina', 'Anticoncepcionais'], effect: 'Reduz a eficácia dos anticoncepcionais', severity: 'Média', recommendation: 'Usar métodos contraceptivos adicionais.' },
+      { pair: ['Dipirona', 'Álcool'], effect: 'Pode potencializar efeitos sedativos', severity: 'Média', recommendation: 'Evitar consumir álcool durante o tratamento.' },
+      { pair: ['Paracetamol', 'Ibuprofeno'], effect: 'Uso combinado pode sobrecarregar os rins', severity: 'Alta', recommendation: 'Evitar o uso simultâneo sem orientação médica.' },
+      { pair: ['Aspirina', 'Varfarina'], effect: 'Aumenta o risco de hemorragias', severity: 'Crítica', recommendation: 'Contraindicado sem supervisão médica.' },
+      { pair: ['Metformina', 'Cimetidina'], effect: 'Pode aumentar os níveis de metformina no sangue', severity: 'Média', recommendation: 'Monitorar níveis de glicose e ajustar a dose se necessário.' },
+    ];
+
+    setInteractionAnalysis(interactionMock);
+  }, []);
+
+  const handleSearch = (query) => {
+    setSearchCalled(true); // Marcar que a pesquisa foi chamada
+    const results = medicines.filter(medicine =>
+      medicine.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setSearchResults(results);
   };
 
-  const handleSimulation = (researchBudget, scientists, duration) => {
-    const effectiveness = Math.min(
+  const handleAddMedicine = () => {
+    setMedicines([...medicines, newMedicine]);
+    setNewMedicine({ name: '', disease: '', description: '', manufacturer: '' });
+  };
+
+  const handleSimulation = (budget, researchers, duration, type) => {
+    const baseEffectiveness = Math.min(
       100,
-      Math.round((researchBudget * 0.1 + scientists * 0.5 + duration * 2) / 10)
+      Math.round((budget * 0.2 + researchers * 0.5 + duration * 1.5) / 10)
     );
+    const typeModifiers = {
+      basic: 0,
+      advanced: 10,
+      clinical: 20,
+    };
+    const effectiveness = Math.min(100, baseEffectiveness + (typeModifiers[type] || 0));
+    const details = {
+      basic: 'Simulação básica com dados limitados.',
+      advanced: 'Simulação avançada com modelos preditivos.',
+      clinical: 'Simulação clínica com dados reais de pacientes.',
+    };
     setSimulationResult({
-      researchBudget,
-      scientists,
+      budget,
+      researchers,
       duration,
+      type,
       effectiveness,
+      details: details[type] || 'Detalhes não disponíveis.',
     });
   };
 
+  const analyzeInteractions = (medicine1, medicine2) => {
+    setInteractionCalled(true); // Marcar que a análise foi chamada
+    const interactions = [
+      { pair: ['Aspirina', 'Ibuprofeno'], effect: 'Aumenta o risco de sangramento' },
+      { pair: ['Paracetamol', 'Álcool'], effect: 'Pode causar danos ao fígado' },
+    ];
+    const result = interactions.find(
+      interaction =>
+        interaction.pair.includes(medicine1) && interaction.pair.includes(medicine2)
+    );
+
+    const analysisResult = result
+      ? [result]
+      : [
+          { pair: [medicine1, medicine2], effect: 'Nenhuma interação encontrada', severity: 'Baixa', recommendation: 'Uso seguro.' },
+        ];
+
+    setInteractionAnalysis(analysisResult);
+    setInteractionHistory((prevHistory) => {
+      const updatedHistory = [...prevHistory, { medicine1, medicine2, result: analysisResult }];
+      return updatedHistory.slice(-2); // Manter apenas as duas consultas mais recentes
+    });
+  };
+
+  const handleMedicineSimulation = (stage, successRate) => {
+    const isApproved = Math.random() * 100 <= successRate;
+    const reasons = {
+      computer: isApproved
+        ? 'Simulação computacional bem-sucedida com base em modelos preditivos e análise de dados moleculares.'
+        : 'Falha na simulação computacional devido a inconsistências nos dados ou incompatibilidade molecular.',
+      animal: isApproved
+        ? 'Testes em animais indicaram eficácia e segurança aceitáveis, sem efeitos colaterais graves.'
+        : 'Reprovação devido a toxicidade elevada ou efeitos colaterais graves observados em animais.',
+      human: isApproved
+        ? 'Testes clínicos em humanos demonstraram eficácia, segurança e tolerância em diferentes grupos demográficos.'
+        : 'Reprovação devido a reações adversas severas, baixa eficácia ou incompatibilidade com populações específicas.',
+    };
+    setSimulationStages((prev) => ({
+      ...prev,
+      [stage]: { result: isApproved ? 'Aprovado' : 'Reprovado', reason: reasons[stage] },
+    }));
+  };
+
   if (isLoading) {
-    return <LoadingScreen />; // Show LoadingScreen while loading
+    return <LoadingScreen />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-600 to-green-900 flex">
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-900 flex">
       <Sidebar onSidebarStateChange={setIsSidebarOpen} />
-      <div 
-        className={`flex-grow transition-all duration-300 p-8 bg-gray-100`} 
+      <div
+        className={`flex-grow transition-all duration-300 p-8 bg-gray-100`}
         style={{ marginLeft: isSidebarOpen ? '16rem' : '5rem' }}
       >
-        <NavBar 
+        <NavBar
           userName={userData?.username || 'Usuário'}
-          pageTitle="Medicines" 
-          userImage={userData?.profile_picture_url ? 
-            `http://127.0.0.1:8000${userData.profile_picture_url}` : 
-            getDefaultAvatar(userData?.username)
-          } // Added userImage prop
+          pageTitle="Medicines"
+          userImage={userData?.profile_picture_url
+            ? `http://127.0.0.1:8000${userData.profile_picture_url}`
+            : getDefaultAvatar(userData?.username)}
         />
         <main className="p-6 bg-gray-50 min-h-screen">
           <header className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Pesquisa e Desenvolvimento de Vacinas</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Gestão de Medicamentos</h1>
             <p className="text-lg text-gray-600">
-              Explore informações detalhadas sobre o progresso global no desenvolvimento de vacinas.
+              Explore, pesquise e adicione novos medicamentos ao sistema.
             </p>
           </header>
 
-          <section id="global-stats" className="mb-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Estatísticas Globais</h2>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="p-4 bg-white rounded-lg shadow">
-                <div className="text-2xl font-bold text-green-600">{mockData.globalStats.vaccinesDeveloped}</div>
-                <div className="text-sm text-gray-600">Vacinas Desenvolvidas</div>
-              </div>
-              <div className="p-4 bg-white rounded-lg shadow">
-                <div className="text-2xl font-bold text-green-600">{mockData.globalStats.countriesInvolved}</div>
-                <div className="text-sm text-gray-600">Países Envolvidos</div>
-              </div>
-              <div className="p-4 bg-white rounded-lg shadow">
-                <div className="text-2xl font-bold text-green-600">{mockData.globalStats.ongoingTrials}</div>
-                <div className="text-sm text-gray-600">Testes em Andamento</div>
-              </div>
-            </div>
-          </section>
-
-          <section id="historical-discoveries" className="mb-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Descobertas Históricas</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {mockData.discoveries.map((discovery, index) => (
-                <div key={index} className="p-4 bg-white rounded-lg shadow">
-                  <h3 className="text-lg font-medium text-gray-900">{discovery.vaccine}</h3>
-                  <p className="text-sm text-gray-600">
-                    Descoberto por {discovery.discoverer} em {discovery.year}.
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section id="global-distribution" className="mb-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Distribuição Global</h2>
-            <div className="grid grid-cols-3 gap-4">
-              {mockData.mapData.map((data, index) => (
-                <div key={index} className="p-4 bg-white rounded-lg shadow text-center">
-                  <img
-                    src={`/flags/${data.flag}`}
-                    alt={`Bandeira de ${data.country}`}
-                    className="w-16 h-10 mx-auto mb-2"
-                  />
-                  <h3 className="text-lg font-medium text-gray-900">{data.country}</h3>
-                  <p className="text-sm text-gray-600">
-                    {data.vaccinesDeveloped} vacinas desenvolvidas
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section id="tools-section" className="mb-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Ferramentas e Descobertas</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {/* Estudos em Universidades */}
-              <div className="p-4 bg-white rounded-lg shadow">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Estudos em Universidades</h3>
-                <ul className="space-y-4">
-                  {mockData.universityStudies.map((study, index) => (
-                    <li key={index} className="p-4 bg-gray-100 rounded-lg shadow">
-                      <div className="flex items-center space-x-4">
-                        <img
-                          src={`/flags/${study.flag}`}
-                          alt={`Bandeira de ${study.university}`}
-                          className="w-8 h-5"
-                        />
-                        <h4 className="text-lg font-medium text-gray-900">{study.university}</h4>
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        {study.study} ({study.year})
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Descobertas Recentes de Laboratórios */}
-              <div className="p-4 bg-white rounded-lg shadow animate-fade-in">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Descobertas Recentes de Laboratórios</h3>
-                <ul className="space-y-4">
-                  {mockData.recentDiscoveries.map((discovery, index) => (
-                    <li key={index} className="p-4 bg-gray-100 rounded-lg shadow">
-                      <div className="flex items-center space-x-4">
-                        <img
-                          src={`/flags/${discovery.flag}`}
-                          alt={`Bandeira do laboratório ${discovery.lab}`}
-                          className="w-8 h-5"
-                        />
-                        <h4 className="text-lg font-medium text-gray-900">{discovery.lab}</h4>
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        {discovery.discovery} ({discovery.year})
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Ferramenta de Simulação de Vacinas */}
-              <div className="p-4 bg-white rounded-lg shadow animate-fade-in">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Ferramenta de Simulação de Vacinas</h3>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.target);
-                    handleSimulation(
-                      parseInt(formData.get("budget")),
-                      parseInt(formData.get("scientists")),
-                      parseInt(formData.get("duration"))
-                    );
-                  }}
-                >
-                  <div className="grid grid-cols-3 gap-4 mb-4 animate-fade-in">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Orçamento (em milhões)</label>
-                      <input
-                        type="number"
-                        name="budget"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Número de Cientistas</label>
-                      <input
-                        type="number"
-                        name="scientists"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Duração (em meses)</label>
-                      <input
-                        type="number"
-                        name="duration"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-700"
-                  >
-                    Simular
-                  </button>
-                </form>
-                {simulationResult && (
-                  <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-                    <h4 className="text-lg font-medium text-gray-900">Resultado da Simulação</h4>
-                    <p className="text-sm text-gray-600">
-                      Orçamento: {simulationResult.researchBudget} milhões
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Cientistas: {simulationResult.scientists}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Duração: {simulationResult.duration} meses
-                    </p>
-                    <p className="text-sm text-gray-600 font-bold">
-                      Eficácia Estimada: {simulationResult.effectiveness}%
-                    </p>
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Ferramenta de Pesquisa */}
+            <section id="search-medicines" className="bg-white p-6 rounded-lg shadow">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Pesquisar Medicamentos</h2>
+              <input
+                type="text"
+                placeholder="Digite o nome do medicamento..."
+                className="w-full p-2 border rounded-md"
+                list="medicine-suggestions"
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+              <datalist id="medicine-suggestions">
+                {medicineSuggestions.map((medicine, index) => (
+                  <option key={index} value={medicine} />
+                ))}
+              </datalist>
+              <div className="mt-4">
+                {searchCalled && searchResults.length > 0 ? (
+                  <ul className="space-y-4">
+                    {searchResults.map((medicine, index) => (
+                      <li key={index} className="p-4 bg-white rounded-lg shadow">
+                        <h3 className="text-lg font-medium text-gray-900">{medicine.name}</h3>
+                        <p className="text-sm text-gray-600">
+                          <strong>Doença:</strong> {medicine.disease}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          <strong>Descrição:</strong> {medicine.description}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          <strong>Fabricante:</strong> {medicine.manufacturer}
+                        </p>
+                        <div className="mt-4 bg-gray-100 p-4 rounded-lg">
+                          <h4 className="text-md font-bold text-gray-800">Propriedades Químicas</h4>
+                          <p className="text-sm text-gray-600">
+                            <strong>Fórmula:</strong> {medicine.chemicalProperties.formula}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            <strong>Peso Molecular:</strong> {medicine.chemicalProperties.molecularWeight}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            <strong>Solubilidade:</strong> {medicine.chemicalProperties.solubility}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            <strong>Ponto de Fusão:</strong> {medicine.chemicalProperties.meltingPoint}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : searchCalled && (
+                  <p className="text-sm text-gray-600">Nenhum medicamento encontrado.</p>
                 )}
               </div>
+            </section>
 
-              {/* Ferramenta de Composição de Vacinas */}
-              <div className="p-4 bg-white rounded-lg shadow animate-fade-in">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Ferramenta de Composição de Vacinas</h3>
-                <ul className="space-y-4">
-                  {mockData.vaccineDetails.map((vaccine, index) => (
-                    <li key={index} className="p-4 bg-gray-100 rounded-lg shadow">
-                      <h4 className="text-lg font-medium text-gray-900">{vaccine.name}</h4>
-                      <p className="text-sm text-gray-600">
-                        <strong>Doença:</strong> {vaccine.disease}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <strong>Criado por:</strong> {vaccine.createdBy}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <strong>Laboratório:</strong> {vaccine.lab}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <strong>País:</strong> {vaccine.country}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <strong>Método de Criação:</strong> {vaccine.creationMethod}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <strong>Descrição:</strong> {vaccine.description}
-                      </p>
-                    </li>
+            {/* Ferramenta de Adição */}
+            <section id="add-medicine" className="bg-white p-6 rounded-lg shadow">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Adicionar Novo Medicamento</h2>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleAddMedicine();
+                }}
+              >
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Nome</label>
+                    <input
+                      type="text"
+                      value={newMedicine.name}
+                      onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Doença</label>
+                    <input
+                      type="text"
+                      value={newMedicine.disease}
+                      onChange={(e) => setNewMedicine({ ...newMedicine, disease: e.target.value })}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Descrição</label>
+                    <textarea
+                      value={newMedicine.description}
+                      onChange={(e) => setNewMedicine({ ...newMedicine, description: e.target.value })}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Fabricante</label>
+                    <input
+                      type="text"
+                      value={newMedicine.manufacturer}
+                      onChange={(e) => setNewMedicine({ ...newMedicine, manufacturer: e.target.value })}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      required
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600"
+                >
+                  Adicionar Medicamento
+                </button>
+              </form>
+            </section>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8 mb-8">
+            {/* Ferramenta de Simulação de Eficácia */}
+            <section id="simulation-tool" className="bg-white p-6 rounded-lg shadow">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Simulação de Eficácia</h2>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.target);
+                  handleSimulation(
+                    parseInt(formData.get("budget")),
+                    parseInt(formData.get("researchers")),
+                    parseInt(formData.get("duration")),
+                    formData.get("type")
+                  );
+                }}
+              >
+                <div className="grid grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Orçamento (em milhões)</label>
+                    <input
+                      type="number"
+                      name="budget"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      list="number-suggestions"
+                      required
+                    />
+                    <datalist id="number-suggestions">
+                      {numberSuggestions.map((number, index) => (
+                        <option key={index} value={number} />
+                      ))}
+                    </datalist>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Pesquisadores</label>
+                    <input
+                      type="number"
+                      name="researchers"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Duração (em meses)</label>
+                    <input
+                      type="number"
+                      name="duration"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Tipo de Simulação</label>
+                    <select
+                      name="type"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      required
+                    >
+                      <option value="basic">Básica</option>
+                      <option value="advanced">Avançada</option>
+                      <option value="clinical">Clínica</option>
+                    </select>
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600"
+                >
+                  Simular
+                </button>
+              </form>
+              {simulationResult && (
+                <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+                  <h4 className="text-lg font-medium text-gray-900">Resultado da Simulação</h4>
+                  <p className="text-sm text-gray-600">Orçamento: {simulationResult.budget} milhões</p>
+                  <p className="text-sm text-gray-600">Pesquisadores: {simulationResult.researchers}</p>
+                  <p className="text-sm text-gray-600">Duração: {simulationResult.duration} meses</p>
+                  <p className="text-sm text-gray-600">Tipo: {simulationResult.type}</p>
+                  <p className="text-sm text-gray-600">Detalhes: {simulationResult.details}</p>
+                  <p className="text-sm text-gray-600 font-bold">Eficácia Estimada: {simulationResult.effectiveness}%</p>
+                </div>
+              )}
+            </section>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            {/* Simulação em Computadores */}
+            <section id="computer-simulation" className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-medium text-gray-900">Simulação em Computadores</h3>
+              <button
+                onClick={() => handleMedicineSimulation('computer', 90)}
+                className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600"
+              >
+                Simular
+              </button>
+              {simulationStages.computer && (
+                <div className="mt-4 text-sm text-gray-600">
+                  <p>
+                    Resultado: <strong>{simulationStages.computer.result}</strong>
+                  </p>
+                  <p>Motivo: {simulationStages.computer.reason}</p>
+                </div>
+              )}
+            </section>
+
+            {/* Simulação em Animais */}
+            <section id="animal-simulation" className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-medium text-gray-900">Simulação em Animais</h3>
+              <button
+                onClick={() => handleMedicineSimulation('animal', 70)}
+                className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600"
+              >
+                Simular
+              </button>
+              {simulationStages.animal && (
+                <div className="mt-4 text-sm text-gray-600">
+                  <p>
+                    Resultado: <strong>{simulationStages.animal.result}</strong>
+                  </p>
+                  <p>Motivo: {simulationStages.animal.reason}</p>
+                </div>
+              )}
+            </section>
+
+            {/* Simulação em Seres Humanos */}
+            <section id="human-simulation" className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-medium text-gray-900">Simulação em Seres Humanos</h3>
+              <button
+                onClick={() => handleMedicineSimulation('human', 50)}
+                className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600"
+              >
+                Simular
+              </button>
+              {simulationStages.human && (
+                <div className="mt-4 text-sm text-gray-600">
+                  <p>
+                    Resultado: <strong>{simulationStages.human.result}</strong>
+                  </p>
+                  <p>Motivo: {simulationStages.human.reason}</p>
+                </div>
+              )}
+            </section>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Ferramenta de Análise de Interações */}
+            <section id="interaction-analysis" className="bg-white p-6 rounded-lg shadow">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Análise de Interações Medicamentosas</h2>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.target);
+                  analyzeInteractions(formData.get("medicine1"), formData.get("medicine2"));
+                }}
+              >
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Medicamento 1</label>
+                    <input
+                      type="text"
+                      name="medicine1"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      list="medicine-suggestions"
+                    />
+                    <datalist id="medicine-suggestions">
+                      {medicineSuggestions.map((medicine, index) => (
+                        <option key={index} value={medicine} />
+                      ))}
+                    </datalist>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Medicamento 2</label>
+                    <input
+                      type="text"
+                      name="medicine2"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                      list="medicine-suggestions"
+                    />
+                    <datalist id="medicine-suggestions">
+                      {medicineSuggestions.map((medicine, index) => (
+                        <option key={index} value={medicine} />
+                      ))}
+                    </datalist>
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600"
+                >
+                  Analisar
+                </button>
+              </form>
+              {interactionCalled && interactionAnalysis.length > 0 ? (
+                <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+                  <h4 className="text-lg font-medium text-gray-900">Resultado da Análise</h4>
+                  {interactionAnalysis.map((interaction, index) => (
+                    <p key={index} className="text-sm text-gray-600">
+                      <strong>Interação:</strong> {interaction.pair.join(' e ')} - {interaction.effect}
+                      <br />
+                      <strong>Gravidade:</strong> {interaction.severity || 'N/A'}
+                      <br />
+                      <strong>Recomendação:</strong> {interaction.recommendation || 'N/A'}
+                    </p>
                   ))}
-                </ul>
+                </div>
+              ) : interactionCalled && (
+                <p className="mt-4 text-sm text-gray-600">Nenhuma interação encontrada.</p>
+              )}
+
+              {/* Histórico de consultas */}
+              {interactionHistory.length > 0 && (
+                <div className="mt-8">
+                  <h4 className="text-lg font-medium text-gray-900">Histórico de Consultas</h4>
+                  <ul className="mt-4 space-y-2">
+                    {interactionHistory.map((entry, index) => (
+                      <li key={index} className="text-sm text-gray-600">
+                        <strong>Medicamentos:</strong> {entry.medicine1} e {entry.medicine2}
+                        <br />
+                        <strong>Resultado:</strong> {entry.result[0]?.effect || 'Nenhuma interação encontrada'}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </section>
+
+            {/* Lista de Medicamentos */}
+            <section id="medicine-list" className="bg-white p-6 rounded-lg shadow">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Lista de Medicamentos</h2>
+              <div className="grid grid-cols-1 gap-4">
+                {medicines.map((medicine, index) => (
+                  <div key={index} className="p-4 bg-white rounded-lg shadow">
+                    <h3 className="text-lg font-medium text-gray-900">{medicine.name}</h3>
+                    <p className="text-sm text-gray-600">
+                      <strong>Doença:</strong> {medicine.disease}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Descrição:</strong> {medicine.description}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Fabricante:</strong> {medicine.manufacturer}
+                    </p>
+                  </div>
+                ))}
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
+
+          <div className="grid grid-cols-1 gap-8">
+            {/* Lista de Pesquisas */}
+            <section id="research-list" className="bg-white p-6 rounded-lg shadow">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Pesquisas Relacionadas</h2>
+              <div className="grid grid-cols-1 gap-4">
+                {[
+                  {
+                    title: 'Estudo sobre a eficácia do Paracetamol em crianças',
+                    description: 'Pesquisa realizada para avaliar a segurança e eficácia do Paracetamol em crianças com febre.',
+                    year: 2022,
+                    institution: 'Universidade de Medicina de São Paulo',
+                  },
+                  {
+                    title: 'Impacto do Ibuprofeno em pacientes com artrite',
+                    description: 'Estudo clínico para analisar os efeitos do Ibuprofeno em pacientes com artrite reumatoide.',
+                    year: 2021,
+                    institution: 'Instituto Nacional de Saúde',
+                  },
+                  {
+                    title: 'Desenvolvimento de novas formulações de Amoxicilina',
+                    description: 'Pesquisa focada em melhorar a biodisponibilidade da Amoxicilina.',
+                    year: 2023,
+                    institution: 'Centro de Pesquisa BioTech',
+                  },
+                ].map((research, index) => (
+                  <div key={index} className="p-4 bg-white rounded-lg shadow">
+                    <h3 className="text-lg font-medium text-gray-900">{research.title}</h3>
+                    <p className="text-sm text-gray-600">
+                      <strong>Descrição:</strong> {research.description}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Ano:</strong> {research.year}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      <strong>Instituição:</strong> {research.institution}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
         </main>
       </div>
     </div>
