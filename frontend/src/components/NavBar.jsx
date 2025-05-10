@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaSignOutAlt } from 'react-icons/fa';
 
-const NavBar = ({ userName = "Usuário" }) => {
+const NavBar = ({ userName = "Usuário", pageTitle = "Dashboard", userImage }) => { // Added userImage prop
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -30,7 +29,7 @@ const NavBar = ({ userName = "Usuário" }) => {
     <nav className="bg-white shadow-lg p-4 mb-6 rounded-lg flex items-center justify-between animate-fade-in delay-700">
       <div className="flex items-center">
         <h1 className="text-4xl font-bold text-gray-800 mb-6">
-          Bem-vindo ao Dashboard, {userName}!
+          Bem-vindo ao {pageTitle}, {userName}!
         </h1>
       </div>
       
@@ -79,7 +78,7 @@ const NavBar = ({ userName = "Usuário" }) => {
             className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden focus:outline-none focus:ring-2 focus:ring-green-500 block"
           >
             <img
-              src="https://via.placeholder.com/40"
+              src={userImage || "https://via.placeholder.com/40"} // Use userImage prop
               alt="Foto do usuário"
               className="w-full h-full object-cover"
             />

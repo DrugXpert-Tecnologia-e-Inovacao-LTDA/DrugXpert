@@ -8,17 +8,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [
-    'app.drugxpert.net',
-    'drugxpert-production.up.railway.app',
-    'localhost',
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(" ")  # Add your allowed hosts here
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
-    "https://app.drugxpert.net",
-    "http://localhost:3000",
+    "http://localhost:3000",  # Default React port
+    "http://localhost:5173",  # Default Vite port
+    "http://localhost:8000",  # Ensure backend allows its own origin
 ]
 
 # Application definition

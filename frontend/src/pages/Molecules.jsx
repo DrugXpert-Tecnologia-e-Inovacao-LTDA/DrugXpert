@@ -5,7 +5,7 @@ import LoadingScreen from '../components/LoadingScreen'; // Import LoadingScreen
 import { getDefaultAvatar } from '../utils/avatar'; // Import getDefaultAvatar
 import { getUser } from '../api/auth'; // Import getUser
 
-const Vaccine = () => {
+const Molecules = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const [simulationResult, setSimulationResult] = useState(null);
@@ -137,7 +137,7 @@ const Vaccine = () => {
       >
         <NavBar 
           userName={userData?.username || 'Usuário'}
-          pageTitle="Vaccines" 
+          pageTitle="Molecules" 
           userImage={userData?.profile_picture_url ? 
             `http://127.0.0.1:8000${userData.profile_picture_url}` : 
             getDefaultAvatar(userData?.username)
@@ -355,4 +355,4 @@ const Vaccine = () => {
   );
 };
 
-export default Vaccine;
+export default Molecules;

@@ -47,6 +47,7 @@ const Home = ({ onLogout }) => {
       >
         <NavBar 
           userName={userData?.username || 'Usuário'} 
+          pageTitle="Dashboard" 
           userImage={userData?.profile_picture_url ? 
             `http://127.0.0.1:8000${userData.profile_picture_url}` : 
             getDefaultAvatar(userData?.username)
