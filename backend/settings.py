@@ -8,12 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [
-    'app.drugxpert.net',
-    'drugxpert-production.up.railway.app',
-    'localhost',
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(" ")  # Add your allowed hosts here
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
