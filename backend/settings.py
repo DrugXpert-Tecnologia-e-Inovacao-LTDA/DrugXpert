@@ -9,7 +9,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(" ")  # Add your allowed hosts here
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'drugxpert-plataform.onrender.com'
+]
+  # Add your allowed hosts here
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
