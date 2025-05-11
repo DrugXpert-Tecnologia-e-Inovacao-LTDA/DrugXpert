@@ -1,24 +1,19 @@
-#https://app.drugxpert.net/  localhost
 import os
 import dj_database_url
-from decouple import config
+
 from pathlib import Path
-from dotenv import load_dotenv
 
-load_dotenv()
 
+# Diretório base do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=False, cast=bool)
+SECRET_KEY = 'django-insecure-va-xdnf^3xrkhann+1w5cmwz_sw2we%045y@!*q%2)h3+g4^jm'
+
+DEBUG = True
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-  # Add your allowed hosts here
 
-# CORS Settings
-CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
-
-# Application definition
+# Aplicações instaladas
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,27 +21,54 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
-    'corsheaders',
+
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
+    'accounts',
+    'corsheaders',
 ]
 
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # deve vir antes de CommonMiddleware
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # serve arquivos estáticos
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
 ]
 
-ROOT_URLCONF = 'DrugXpert.urls'
+# CORS (liberado em dev)
+CORS_ALLOW_ALL_ORIGINS = True
 
+# Configuração do Django REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+# Modelo de usuário personalizado
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# Configuração do Djoser
+DJOSER = {
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'LOGIN_FIELD': 'email',
+    'USER_ID_FIELD': 'id',
+    'SERIALIZERS': {
+        'user': 'accounts.serializers.UserSerializer',
+        'current_user': 'accounts.serializers.UserSerializer',
+    },
+}
+
+ROOT_URLCONF = 'backend.urls'
+
+# Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -54,7 +76,6 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -63,18 +84,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'DrugXpert.wsgi.application'
+WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database
+# Banco de dados
 DATABASES = {
     'default': dj_database_url.config(
-        default=config("DATABASE_URL"),
+        default=os.getenv('DATABASE_URL'),
         conn_max_age=600,
         ssl_require=True
     )
 }
 
-# Password validation
+# Validação de senhas
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -90,36 +111,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
+# Internacionalização
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
-STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Arquivos estáticos
+STATIC_URL = 'static/'
+
+# Corrige o erro do collectstatic
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Configuração do WhiteNoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Default primary key field type
+# Campo padrão para chaves primárias
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ),
-}
-
-DJOSER = {
-    'LOGIN_FIELD': 'email',
-    'SERIALIZERS': {
-        'user_create': 'djoser.serializers.UserCreateSerializer',
-        'user': 'djoser.serializers.UserSerializer',
-        'current_user': 'djoser.serializers.UserSerializer',
-    },
-}
