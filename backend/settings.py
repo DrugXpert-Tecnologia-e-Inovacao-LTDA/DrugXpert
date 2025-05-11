@@ -3,25 +3,20 @@ import os
 import dj_database_url
 from decouple import config
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'drugxpert-plataform.onrender.com'
-]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
   # Add your allowed hosts here
 
 # CORS Settings
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Default React port
-    "http://localhost:5173",  # Default Vite port
-    "http://localhost:8000",  # Ensure backend allows its own origin
-]
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
 
 # Application definition
 INSTALLED_APPS = [
