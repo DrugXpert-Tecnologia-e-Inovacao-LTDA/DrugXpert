@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import NavBar from '../components/NavBar';
-import LoadingScreen from '../components/LoadingScreen'; // Import LoadingScreen
-import { getDefaultAvatar } from '../utils/avatar'; // Import getDefaultAvatar
-import { getUser } from '../api/auth'; // Import getUser
+import LoadingScreen from '../components/LoadingScreen';
+import { getDefaultAvatar } from '../utils/avatar';
+import { getUser } from '../api/auth';
 
 const Molecules = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userData, setUserData] = useState(null);
   const [simulationResult, setSimulationResult] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedMolecule, setSelectedMolecule] = useState(null);
+  const [sumMolA, setSumMolA] = useState('');
+  const [sumMolB, setSumMolB] = useState('');
+  const [sumResult, setSumResult] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -28,88 +33,144 @@ const Molecules = () => {
     }
   }, []);
 
+  // Dados mockados adaptados para moléculas
   const mockData = {
     globalStats: {
-      vaccinesDeveloped: 120,
-      countriesInvolved: 80,
-      ongoingTrials: 300,
+      moleculesDiscovered: 350,
+      researchCenters: 45,
+      ongoingResearch: 120,
     },
-    discoveries: [
-      { year: 1796, vaccine: "Smallpox", discoverer: "Edward Jenner" },
-      { year: 1885, vaccine: "Rabies", discoverer: "Louis Pasteur" },
-      { year: 1955, vaccine: "Polio", discoverer: "Jonas Salk" },
-      { year: 1967, vaccine: "Mumps", discoverer: "Maurice Hilleman" },
-      { year: 1980, vaccine: "Hepatitis B", discoverer: "Baruch Blumberg" },
-    ],
-    mapData: [
-      { country: "USA", vaccinesDeveloped: 40, flag: "us.svg" },
-      { country: "UK", vaccinesDeveloped: 20, flag: "gb-eng.svg" },
-      { country: "India", vaccinesDeveloped: 30, flag: "in.svg" },
-      { country: "Germany", vaccinesDeveloped: 15, flag: "de.svg" },
-      { country: "China", vaccinesDeveloped: 25, flag: "cn.svg" },
-    ],
     recentDiscoveries: [
-      { lab: "Pfizer", discovery: "Nova vacina contra variantes", year: 2023, flag: "us.svg" },
-      { lab: "Moderna", discovery: "Vacina de RNA mensageiro aprimorada", year: 2022, flag: "us.svg" },
-      { lab: "AstraZeneca", discovery: "Vacina combinada para gripe e COVID-19", year: 2023, flag: "gb-eng.svg" },
-      { lab: "Sinovac", discovery: "Vacina inativada para COVID-19", year: 2021, flag: "cn.svg" },
-      { lab: "Johnson & Johnson", discovery: "Vacina de dose única para COVID-19", year: 2021, flag: "us.svg" },
+      { year: 2024, molecule: "DXP-101", discoverer: "LabXpert", description: "Nova molécula com potencial anti-inflamatório." },
+      { year: 2023, molecule: "Mol-Alpha", discoverer: "BioGen", description: "Molécula promissora para tratamento de câncer." },
+      { year: 2023, molecule: "NanoCure", discoverer: "NanoLab", description: "Molécula nanoestruturada para regeneração celular." },
+      { year: 2022, molecule: "ImmunoBoost", discoverer: "ImmunoTech", description: "Molécula que estimula o sistema imunológico." },
+      { year: 2022, molecule: "NeuroDex", discoverer: "NeuroLab", description: "Molécula para doenças neurodegenerativas." },
     ],
-    universityStudies: [
-      { university: "Harvard", study: "Eficácia de vacinas em idosos", year: 2023, flag: "us.svg" },
-      { university: "Oxford", study: "Vacinas de próxima geração", year: 2022, flag: "gb-eng.svg" },
-      { university: "Stanford", study: "Impacto de vacinas em doenças raras", year: 2023, flag: "us.svg" },
-      { university: "MIT", study: "Vacinas baseadas em nanotecnologia", year: 2023, flag: "us.svg" },
-      { university: "Cambridge", study: "Vacinas para doenças negligenciadas", year: 2022, flag: "gb-eng.svg" },
+    researchComponents: [
+      { name: "Enzima QX-12", type: "Enzima", status: "Nova", description: "Catalisador para reações metabólicas." },
+      { name: "Peptídeo Beta-7", type: "Peptídeo", status: "Nova", description: "Peptídeo sintético para terapias inovadoras." },
+      { name: "Ligante L-202", type: "Ligante", status: "Nova", description: "Ligante para receptores celulares específicos." },
+      { name: "Nanopartícula ZN-5", type: "Nanopartícula", status: "Nova", description: "Nanopartícula para entrega de fármacos." },
     ],
-    vaccineDetails: [
-      {
-        name: "Vacina BCG",
-        disease: "Tuberculose",
-        createdBy: "Albert Calmette e Camille Guérin",
-        lab: "Instituto Pasteur",
-        country: "França",
-        creationMethod: "Bactéria atenuada",
-        description: "Protege contra formas graves de tuberculose, especialmente em crianças.",
-      },
-      {
-        name: "Vacina contra COVID-19 (Pfizer-BioNTech)",
-        disease: "COVID-19",
-        createdBy: "Pfizer e BioNTech",
-        lab: "Pfizer-BioNTech",
-        country: "EUA e Alemanha",
-        creationMethod: "RNA mensageiro",
-        description: "Previne infecções graves causadas pelo vírus SARS-CoV-2.",
-      },
-      {
-        name: "Vacina contra Poliomielite",
-        disease: "Poliomielite",
-        createdBy: "Jonas Salk",
-        lab: "Universidade de Pittsburgh",
-        country: "EUA",
-        creationMethod: "Vírus inativado",
-        description: "Previne a poliomielite, uma doença que pode causar paralisia.",
-      },
-      {
-        name: "Vacina contra Sarampo",
-        disease: "Sarampo",
-        createdBy: "John Enders",
-        lab: "Children's Hospital Boston",
-        country: "EUA",
-        creationMethod: "Vírus atenuado",
-        description: "Previne o sarampo, uma doença altamente contagiosa.",
-      },
-      {
-        name: "Vacina contra HPV",
-        disease: "Papilomavírus Humano",
-        createdBy: "Ian Frazer",
-        lab: "University of Queensland",
-        country: "Austrália",
-        creationMethod: "Partículas semelhantes ao vírus",
-        description: "Previne infecções por HPV e cânceres associados.",
-      },
+    ongoingResearch: [
+      { project: "Molécula DXP-101 em ensaios clínicos", center: "LabXpert", expectedResult: "2025" },
+      { project: "Estudo de estabilidade do Peptídeo Beta-7", center: "BioGen", expectedResult: "2024" },
+      { project: "Aplicação de NanoCure em tecidos humanos", center: "NanoLab", expectedResult: "2025" },
+      { project: "Testes pré-clínicos do ImmunoBoost", center: "ImmunoTech", expectedResult: "2024" },
     ],
   };
+
+  const moleculeDisplayData = [
+    {
+      compoundId: "Amigdalin",
+      esol: -0.974,
+      minDegree: 1,
+      molecularWeight: 457.432,
+      hBondDonors: 7,
+      rings: 3,
+      rotatableBonds: 7,
+      polarSurfaceArea: 202.32,
+      measuredLogSol: -0.77,
+      smiles: "N#CC(OC1OC(COC2OC(CO)C(O)C(O)C2O)C(O)C(O)C1O)C1:C:C:C:C:C:1"
+    },
+    {
+      compoundId: "Fenfuram",
+      esol: -2.885,
+      minDegree: 1,
+      molecularWeight: 201.225,
+      hBondDonors: 1,
+      rings: 2,
+      rotatableBonds: 2,
+      polarSurfaceArea: 42.24,
+      measuredLogSol: -3.3,
+      smiles: "CC1:O:C:C:C:1C(=O)NC1:C:C:C:C:C:1"
+    },
+    {
+      compoundId: "citral",
+      esol: -2.579,
+      minDegree: 1,
+      molecularWeight: 152.237,
+      hBondDonors: 0,
+      rings: 0,
+      rotatableBonds: 4,
+      polarSurfaceArea: 17.07,
+      measuredLogSol: -2.06,
+      smiles: "CC(C)=CCCC(C)=CC=O"
+    },
+    {
+      compoundId: "Picene",
+      esol: -6.618,
+      minDegree: 2,
+      molecularWeight: 278.354,
+      hBondDonors: 0,
+      rings: 5,
+      rotatableBonds: 0,
+      polarSurfaceArea: 0.0,
+      measuredLogSol: -7.87,
+      smiles: "C1:C:C:C2:C(:C:1):C:C:C1:C:2:C:C:C2:C3:C:C:C:C:C:3:C:C:C:2:1"
+    },
+    {
+      compoundId: "Thiophene",
+      esol: -2.232,
+      minDegree: 2,
+      molecularWeight: 84.143,
+      hBondDonors: 0,
+      rings: 1,
+      rotatableBonds: 0,
+      polarSurfaceArea: 0.0,
+      measuredLogSol: -1.33,
+      smiles: "C1:C:C:S:C:1"
+    },
+    {
+      compoundId: "benzothiazole",
+      esol: -2.733,
+      minDegree: 2,
+      molecularWeight: 135.191,
+      hBondDonors: 0,
+      rings: 2,
+      rotatableBonds: 0,
+      polarSurfaceArea: 12.89,
+      measuredLogSol: -1.5,
+      smiles: "C1:C:C:C2:S:C:N:C:2:C:1"
+    },
+    {
+      compoundId: "2,2,4,6,6'-PCB",
+      esol: -6.545,
+      minDegree: 1,
+      molecularWeight: 326.437,
+      hBondDonors: 0,
+      rings: 2,
+      rotatableBonds: 1,
+      polarSurfaceArea: 0.0,
+      measuredLogSol: -7.32,
+      smiles: "ClC1:C:C(Cl):C(C2:C(Cl):C:C:C:C:2Cl):C(Cl):C:1"
+    },
+    {
+      compoundId: "Estradiol",
+      esol: -4.138,
+      minDegree: 1,
+      molecularWeight: 272.388,
+      hBondDonors: 2,
+      rings: 4,
+      rotatableBonds: 0,
+      polarSurfaceArea: 40.46,
+      measuredLogSol: -5.03,
+      smiles: "CC12CCC3C4:C:C:C(O):C:C:4CCC3C1CCC2O"
+    },
+    {
+      compoundId: "Dieldrin",
+      esol: -4.533,
+      minDegree: 1,
+      molecularWeight: 380.913,
+      hBondDonors: 0,
+      rings: 5,
+      rotatableBonds: 0,
+      polarSurfaceArea: 12.53,
+      measuredLogSol: -6.29,
+      smiles: "ClC1=C(Cl)C2(Cl)C3C4CC(C5OC45)C3C1(Cl)C2(Cl)Cl"
+    }
+  ];
 
   const handleSimulation = (researchBudget, scientists, duration) => {
     const effectiveness = Math.min(
@@ -137,7 +198,7 @@ const Molecules = () => {
       >
         <NavBar 
           userName={userData?.username || 'Usuário'}
-          pageTitle="Molecules" 
+          pageTitle="Moléculas" 
           userImage={userData?.profile_picture_url ? 
             `http://127.0.0.1:8000${userData.profile_picture_url}` : 
             getDefaultAvatar(userData?.username)
@@ -145,9 +206,9 @@ const Molecules = () => {
         />
         <main className="p-6 bg-gray-50 min-h-screen">
           <header className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Pesquisa e Desenvolvimento de Vacinas</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Descobertas e Pesquisas de Moléculas</h1>
             <p className="text-lg text-gray-600">
-              Explore informações detalhadas sobre o progresso global no desenvolvimento de vacinas.
+              Explore as moléculas mais recentes, componentes inovadores e pesquisas em andamento no mundo científico.
             </p>
           </header>
 
@@ -155,198 +216,203 @@ const Molecules = () => {
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Estatísticas Globais</h2>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="p-4 bg-white rounded-lg shadow">
-                <div className="text-2xl font-bold text-green-600">{mockData.globalStats.vaccinesDeveloped}</div>
-                <div className="text-sm text-gray-600">Vacinas Desenvolvidas</div>
+                <div className="text-2xl font-bold text-green-600">{mockData.globalStats.moleculesDiscovered}</div>
+                <div className="text-sm text-gray-600">Moléculas Descobertas</div>
               </div>
               <div className="p-4 bg-white rounded-lg shadow">
-                <div className="text-2xl font-bold text-green-600">{mockData.globalStats.countriesInvolved}</div>
-                <div className="text-sm text-gray-600">Países Envolvidos</div>
+                <div className="text-2xl font-bold text-green-600">{mockData.globalStats.researchCenters}</div>
+                <div className="text-sm text-gray-600">Centros de Pesquisa</div>
               </div>
               <div className="p-4 bg-white rounded-lg shadow">
-                <div className="text-2xl font-bold text-green-600">{mockData.globalStats.ongoingTrials}</div>
-                <div className="text-sm text-gray-600">Testes em Andamento</div>
+                <div className="text-2xl font-bold text-green-600">{mockData.globalStats.ongoingResearch}</div>
+                <div className="text-sm text-gray-600">Pesquisas em Andamento</div>
               </div>
             </div>
           </section>
 
-          <section id="historical-discoveries" className="mb-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Descobertas Históricas</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {mockData.discoveries.map((discovery, index) => (
+          <section id="recent-discoveries" className="mb-8 animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Descobertas Recentes de Moléculas</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {mockData.recentDiscoveries.map((discovery, index) => (
                 <div key={index} className="p-4 bg-white rounded-lg shadow">
-                  <h3 className="text-lg font-medium text-gray-900">{discovery.vaccine}</h3>
+                  <h3 className="text-lg font-medium text-gray-900">{discovery.molecule}</h3>
                   <p className="text-sm text-gray-600">
-                    Descoberto por {discovery.discoverer} em {discovery.year}.
+                    Descoberta por {discovery.discoverer} em {discovery.year}.
                   </p>
+                  <p className="text-sm text-gray-700">{discovery.description}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          <section id="global-distribution" className="mb-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Distribuição Global</h2>
-            <div className="grid grid-cols-3 gap-4">
-              {mockData.mapData.map((data, index) => (
-                <div key={index} className="p-4 bg-white rounded-lg shadow text-center">
-                  <img
-                    src={`/flags/${data.flag}`}
-                    alt={`Bandeira de ${data.country}`}
-                    className="w-16 h-10 mx-auto mb-2"
-                  />
-                  <h3 className="text-lg font-medium text-gray-900">{data.country}</h3>
-                  <p className="text-sm text-gray-600">
-                    {data.vaccinesDeveloped} vacinas desenvolvidas
-                  </p>
+          <section id="research-components" className="mb-8 animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Componentes de Pesquisas Novas</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {mockData.researchComponents.map((component, index) => (
+                <div key={index} className="p-4 bg-white rounded-lg shadow">
+                  <h3 className="text-lg font-medium text-gray-900">{component.name}</h3>
+                  <p className="text-sm text-gray-600"><strong>Tipo:</strong> {component.type}</p>
+                  <p className="text-sm text-gray-600"><strong>Status:</strong> {component.status}</p>
+                  <p className="text-sm text-gray-700">{component.description}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          <section id="tools-section" className="mb-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Ferramentas e Descobertas</h2>
-            <div className="grid grid-cols-2 gap-4">
-              {/* Estudos em Universidades */}
-              <div className="p-4 bg-white rounded-lg shadow">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Estudos em Universidades</h3>
-                <ul className="space-y-4">
-                  {mockData.universityStudies.map((study, index) => (
-                    <li key={index} className="p-4 bg-gray-100 rounded-lg shadow">
-                      <div className="flex items-center space-x-4">
-                        <img
-                          src={`/flags/${study.flag}`}
-                          alt={`Bandeira de ${study.university}`}
-                          className="w-8 h-5"
-                        />
-                        <h4 className="text-lg font-medium text-gray-900">{study.university}</h4>
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        {study.study} ({study.year})
-                      </p>
-                    </li>
-                  ))}
+          <section id="ongoing-research" className="mb-8 animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Pesquisas em Andamento</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {mockData.ongoingResearch.map((research, index) => (
+                <div key={index} className="p-4 bg-white rounded-lg shadow">
+                  <h3 className="text-lg font-medium text-gray-900">{research.project}</h3>
+                  <p className="text-sm text-gray-600"><strong>Centro:</strong> {research.center}</p>
+                  <p className="text-sm text-gray-600"><strong>Previsão de Resultados:</strong> {research.expectedResult}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Ferramenta de Pesquisa de Moléculas */}
+          <section id="molecule-search" className="mb-8 animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Pesquisar Molécula</h2>
+            <form
+              className="flex flex-col md:flex-row items-center gap-4 mb-4"
+              onSubmit={e => {
+                e.preventDefault();
+                const found = moleculeDisplayData.find(
+                  mol => mol.compoundId.toLowerCase() === searchTerm.trim().toLowerCase()
+                );
+                setSelectedMolecule(found || null);
+              }}
+            >
+              <input
+                type="text"
+                placeholder="Digite o nome da molécula (ex: Amigdalin)"
+                className="border rounded-md px-3 py-2 w-full md:w-64"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-700"
+              >
+                Pesquisar
+              </button>
+            </form>
+            {selectedMolecule ? (
+              <div className="p-4 bg-white rounded-lg shadow mt-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{selectedMolecule.compoundId}</h3>
+                <ul className="text-sm text-gray-700 space-y-1">
+                  <li><strong>ESOL logS:</strong> {selectedMolecule.esol}</li>
+                  <li><strong>Min Degree:</strong> {selectedMolecule.minDegree}</li>
+                  <li><strong>Peso Molecular:</strong> {selectedMolecule.molecularWeight}</li>
+                  <li><strong>H-Bond Donors:</strong> {selectedMolecule.hBondDonors}</li>
+                  <li><strong>Anéis:</strong> {selectedMolecule.rings}</li>
+                  <li><strong>Ligações Rotativas:</strong> {selectedMolecule.rotatableBonds}</li>
+                  <li><strong>Área de Superfície Polar:</strong> {selectedMolecule.polarSurfaceArea}</li>
+                  <li><strong>Measured logS:</strong> {selectedMolecule.measuredLogSol}</li>
+                  <li><strong>SMILES:</strong> <span className="break-all">{selectedMolecule.smiles}</span></li>
                 </ul>
               </div>
+            ) : searchTerm ? (
+              <div className="text-red-600 mt-2">Molécula não encontrada.</div>
+            ) : null}
+          </section>
 
-              {/* Descobertas Recentes de Laboratórios */}
-              <div className="p-4 bg-white rounded-lg shadow animate-fade-in">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Descobertas Recentes de Laboratórios</h3>
-                <ul className="space-y-4">
-                  {mockData.recentDiscoveries.map((discovery, index) => (
-                    <li key={index} className="p-4 bg-gray-100 rounded-lg shadow">
-                      <div className="flex items-center space-x-4">
-                        <img
-                          src={`/flags/${discovery.flag}`}
-                          alt={`Bandeira do laboratório ${discovery.lab}`}
-                          className="w-8 h-5"
-                        />
-                        <h4 className="text-lg font-medium text-gray-900">{discovery.lab}</h4>
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        {discovery.discovery} ({discovery.year})
-                      </p>
-                    </li>
+          {/* Ferramenta de Soma de Moléculas */}
+          <section id="molecule-sum" className="mb-8 animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Somar Moléculas</h2>
+            <form
+              className="flex flex-col md:flex-row items-center gap-4 mb-4"
+              onSubmit={e => {
+                e.preventDefault();
+                const molA = moleculeDisplayData.find(
+                  mol => mol.compoundId.toLowerCase() === sumMolA.trim().toLowerCase()
+                );
+                const molB = moleculeDisplayData.find(
+                  mol => mol.compoundId.toLowerCase() === sumMolB.trim().toLowerCase()
+                );
+                if (molA && molB) {
+                  setSumResult({
+                    name: `${molA.compoundId} + ${molB.compoundId}`,
+                    smiles: `${molA.smiles}.${molB.smiles}`
+                  });
+                } else {
+                  setSumResult('notfound');
+                }
+              }}
+            >
+              <input
+                type="text"
+                placeholder="Molécula A (ex: Amigdalin)"
+                className="border rounded-md px-3 py-2 w-full md:w-64"
+                value={sumMolA}
+                onChange={e => setSumMolA(e.target.value)}
+              />
+              <span className="font-bold">+</span>
+              <input
+                type="text"
+                placeholder="Molécula B (ex: Fenfuram)"
+                className="border rounded-md px-3 py-2 w-full md:w-64"
+                value={sumMolB}
+                onChange={e => setSumMolB(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-700"
+              >
+                Somar
+              </button>
+            </form>
+            {sumResult === 'notfound' ? (
+              <div className="text-red-600 mt-2">Uma ou ambas as moléculas não foram encontradas.</div>
+            ) : sumResult ? (
+              <div className="p-4 bg-white rounded-lg shadow mt-2">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{sumResult.name}</h3>
+                <div>
+                  <strong>SMILES resultante:</strong>
+                  <div className="break-all text-sm mt-1">{sumResult.smiles}</div>
+                </div>
+              </div>
+            ) : null}
+          </section>
+
+          {/* Display de Moléculas */}
+          <section id="molecule-display" className="mb-8 animate-fade-in">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Display de Moléculas</h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white rounded-lg shadow text-xs md:text-sm">
+                <thead>
+                  <tr>
+                    <th className="px-2 py-2 border">Compound ID</th>
+                    <th className="px-2 py-2 border">ESOL logS</th>
+                    <th className="px-2 py-2 border">Min Degree</th>
+                    <th className="px-2 py-2 border">Mol. Weight</th>
+                    <th className="px-2 py-2 border">H-Bond Donors</th>
+                    <th className="px-2 py-2 border">Rings</th>
+                    <th className="px-2 py-2 border">Rotatable Bonds</th>
+                    <th className="px-2 py-2 border">Polar Surface Area</th>
+                    <th className="px-2 py-2 border">Measured logS</th>
+                    <th className="px-2 py-2 border">SMILES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {moleculeDisplayData.map((mol, idx) => (
+                    <tr key={idx} className="hover:bg-gray-100">
+                      <td className="px-2 py-1 border">{mol.compoundId}</td>
+                      <td className="px-2 py-1 border">{mol.esol}</td>
+                      <td className="px-2 py-1 border">{mol.minDegree}</td>
+                      <td className="px-2 py-1 border">{mol.molecularWeight}</td>
+                      <td className="px-2 py-1 border">{mol.hBondDonors}</td>
+                      <td className="px-2 py-1 border">{mol.rings}</td>
+                      <td className="px-2 py-1 border">{mol.rotatableBonds}</td>
+                      <td className="px-2 py-1 border">{mol.polarSurfaceArea}</td>
+                      <td className="px-2 py-1 border">{mol.measuredLogSol}</td>
+                      <td className="px-2 py-1 border break-all">{mol.smiles}</td>
+                    </tr>
                   ))}
-                </ul>
-              </div>
-
-              {/* Ferramenta de Simulação de Vacinas */}
-              <div className="p-4 bg-white rounded-lg shadow animate-fade-in">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Ferramenta de Simulação de Vacinas</h3>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.target);
-                    handleSimulation(
-                      parseInt(formData.get("budget")),
-                      parseInt(formData.get("scientists")),
-                      parseInt(formData.get("duration"))
-                    );
-                  }}
-                >
-                  <div className="grid grid-cols-3 gap-4 mb-4 animate-fade-in">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Orçamento (em milhões)</label>
-                      <input
-                        type="number"
-                        name="budget"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Número de Cientistas</label>
-                      <input
-                        type="number"
-                        name="scientists"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Duração (em meses)</label>
-                      <input
-                        type="number"
-                        name="duration"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-700"
-                  >
-                    Simular
-                  </button>
-                </form>
-                {simulationResult && (
-                  <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-                    <h4 className="text-lg font-medium text-gray-900">Resultado da Simulação</h4>
-                    <p className="text-sm text-gray-600">
-                      Orçamento: {simulationResult.researchBudget} milhões
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Cientistas: {simulationResult.scientists}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Duração: {simulationResult.duration} meses
-                    </p>
-                    <p className="text-sm text-gray-600 font-bold">
-                      Eficácia Estimada: {simulationResult.effectiveness}%
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Ferramenta de Composição de Vacinas */}
-              <div className="p-4 bg-white rounded-lg shadow animate-fade-in">
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Ferramenta de Composição de Vacinas</h3>
-                <ul className="space-y-4">
-                  {mockData.vaccineDetails.map((vaccine, index) => (
-                    <li key={index} className="p-4 bg-gray-100 rounded-lg shadow">
-                      <h4 className="text-lg font-medium text-gray-900">{vaccine.name}</h4>
-                      <p className="text-sm text-gray-600">
-                        <strong>Doença:</strong> {vaccine.disease}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <strong>Criado por:</strong> {vaccine.createdBy}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <strong>Laboratório:</strong> {vaccine.lab}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <strong>País:</strong> {vaccine.country}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <strong>Método de Criação:</strong> {vaccine.creationMethod}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        <strong>Descrição:</strong> {vaccine.description}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                </tbody>
+              </table>
             </div>
           </section>
         </main>
